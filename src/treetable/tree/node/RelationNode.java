@@ -4,8 +4,8 @@ package treetable.tree.node;
 public class RelationNode extends treetable.tree.node.ChildNode implements VisitorAcceptor
 {
 
-    public RelationNode( Object[] objects )
+    public RelationNode( int treeItemNumber, Object[] objects )
     {
-        super( objects );
+        super( treeItemNumber, objects );
     }
 }

@@ -11,8 +11,10 @@ import static java.sql.DriverManager.getConnection;
 
 public class MySQLConnection implements Connection
 {
+
     private java.sql.Connection connection;
-    private HashMap< ConnectionParameter, String > parameters;
+    private HashMap< ConnectionParameter, String> parameters;
+
     public MySQLConnection()
     {
         try
@@ -26,6 +28,7 @@ public class MySQLConnection implements Connection
         parameters = new HashMap<>();
     }
 
+    @Override
     public boolean connect( HashMap< ConnectionParameter, String> connectionParameters )
     {
         parameters = connectionParameters;
@@ -33,8 +36,8 @@ public class MySQLConnection implements Connection
         String port = connectionParameters.get( ConnectionParameter.PORT );
         String user_name = connectionParameters.get( ConnectionParameter.USERNAME );
         String password = connectionParameters.get( ConnectionParameter.PASSWORD );
-        String databaseName = connectionParameters.get(ConnectionParameter.SCHEMA );
-        
+        String databaseName = connectionParameters.get( ConnectionParameter.SCHEMA );
+
         try
         {
             connection = getConnection( "jdbc:mysql://" + host + ":" + port + "/" + databaseName + "?user=" + user_name + "&password=" + password );
@@ -47,11 +50,12 @@ public class MySQLConnection implements Connection
         return false;
     }
 
+    @Override
     public String getConnectionParameter( ConnectionParameter parameter )
     {
         return parameters.get( parameter );
     }
-    
+
     @Override
     public ResultSet executeQuery( String query, HashMap< Integer, String> parameters )
     {
@@ -59,13 +63,12 @@ public class MySQLConnection implements Connection
         {
             PreparedStatement prepared_statement = connection.prepareStatement( query );
 
-            Set< Integer > keys = parameters.keySet();
+            Set< Integer> keys = parameters.keySet();
 
             for ( Integer key : keys )
             {
                 prepared_statement.setString( key, parameters.get( key ) );
             }
-
             return prepared_statement.executeQuery();
         }
         catch ( SQLException ex )
@@ -93,11 +96,11 @@ public class MySQLConnection implements Connection
     }
 
     @Override
-    public ArrayList< String > getResultList( ResultSet resultSet )
+    public ArrayList< String> getResultList( ResultSet resultSet )
     {
         try
         {
-            ArrayList< String > results = new ArrayList<>();
+            ArrayList< String> results = new ArrayList<>();
             while ( resultSet.next() )
             {
                 results.add( resultSet.getString( 1 ) );

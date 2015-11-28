@@ -1,11 +1,11 @@
 package treetable.tree.node;
 
 
-public class NonKeyNode extends Node implements VisitorAcceptor
+public class NonKeyNode extends treetable.tree.node.ChildNode implements VisitorAcceptor
 {
 
-    public NonKeyNode( Object[] objects )
+    public NonKeyNode( int treeItemNumber, Object[] objects )
     {
-        super( objects );
+        super( treeItemNumber, objects );
     }
 }

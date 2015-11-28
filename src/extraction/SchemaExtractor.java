@@ -1,7 +1,11 @@
 package extraction;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import org.jdesktop.swingx.JXTreeTable;
@@ -40,10 +44,19 @@ public class SchemaExtractor
 
         ArrayList< String> relationNames = importRelations( schemaName );
 
-        relationNames.stream().forEach( this::importPrimaryKeys );
-        relationNames.stream().forEach( this::ImportForeignKeys );
-        relationNames.stream().forEach( this::importNonKeys );
+        for ( String relationName : relationNames )
+        {
+            treeTable.addRelation( relationName );
+            relationNames_comboBox.addItem( relationName.substring( 0, 1 ).toUpperCase() + relationName.substring( 1 ) );
+            importPrimaryKeys( relationName );
+            ImportForeignKeys( relationName );
+            importNonKeys( relationName );
 
+        }
+
+        //relationNames.stream().forEach( this::importPrimaryKeys );
+        //relationNames.stream().forEach( this::ImportForeignKeys );
+        //relationNames.stream().forEach( this::importNonKeys );
         JComboBox datatype_comboBox = new JComboBox();
         datatype_comboBox.addItem( "xsd:string" );
         datatype_comboBox.addItem( "xsd:integer" );
@@ -61,7 +74,7 @@ public class SchemaExtractor
         parameters.put( 1, relationName );
         parameters.put( 2, schemaName );
 
-        ArrayList< String > primaryKeyNames = connection.getResultList( connection.executeQuery( query, parameters ) );
+        ArrayList< String> primaryKeyNames = connection.getResultList( connection.executeQuery( query, parameters ) );
 
         primaryKeyNames.stream().forEach( ( String primaryKeyName )
                 -> 
@@ -82,7 +95,7 @@ public class SchemaExtractor
         non_key_names.stream().forEach( ( nonKeyName )
                 -> 
                 {
-                    treeTable.addNonKey( relationName, nonKeyName );
+                    treeTable.addNonKey( relationName, nonKeyName ).setValueAt( "xsd:string", 2 );
         } );
     }
 
@@ -98,15 +111,25 @@ public class SchemaExtractor
 
         for ( String foreignKeyName : foreign_key_names )
         {
-            query = "SELECT referenced_table_name FROM information_schema.key_column_usage WHERE table_name = ? AND constraint_name != 'PRIMARY' AND constraint_name != column_name AND column_name = ? AND table_schema = ?";
+            query = "SELECT * FROM information_schema.key_column_usage WHERE table_name = ? AND constraint_name != 'PRIMARY' AND constraint_name != column_name AND column_name = ? AND table_schema = ?";
 
             parameters = new HashMap<>();
             parameters.put( 1, relationName );
             parameters.put( 2, foreignKeyName );
             parameters.put( 3, schemaName );
 
-            String referencedRelationName = connection.getFirstResult( connection.executeQuery( query, parameters ) );
-            treeTable.addForeignKey( relationName, foreignKeyName, "FK" + relationName + "_" + foreignKeyName, "PK" + referencedRelationName );
+            try
+            {
+                ResultSet r = ( connection.executeQuery( query, parameters ) );
+                if ( r.next() )
+                {
+                    treeTable.addForeignKey( relationName, foreignKeyName, r.getString( "referenced_table_name" ), r.getString( "REFERENCED_COLUMN_NAME" ) );
+                }
+            }
+            catch ( SQLException ex )
+            {
+                Logger.getLogger( SchemaExtractor.class.getName() ).log( Level.SEVERE, null, ex );
+            }
         }
     }
 
@@ -121,8 +144,8 @@ public class SchemaExtractor
         relationNames.stream().forEach( ( String relationName )
                 -> 
                 {
-                    treeTable.addRelation( relationName );
-                    relationNames_comboBox.addItem( relationName );
+                    //treeTable.addRelation( relationName );
+                    //relationNames_comboBox.addItem( relationName.substring( 0, 1 ).toUpperCase() + relationName.substring( 1 ) );
         } );
         return relationNames;
     }

@@ -4,10 +4,11 @@ import org.jdesktop.swingx.treetable.AbstractMutableTreeTableNode;
 
 public abstract class Node extends AbstractMutableTreeTableNode
 {
-
-    public Node( Object[] objects )
+    protected int treeItemNumber=-1;    
+    public Node( int treeItemNumber, Object[] objects )
     {
         super( objects );
+        this.treeItemNumber = treeItemNumber;
     }
 
     @Override

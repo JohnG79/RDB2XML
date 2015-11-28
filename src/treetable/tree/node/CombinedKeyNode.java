@@ -3,12 +3,13 @@ package treetable.tree.node;
 public class CombinedKeyNode extends ForeignKeyNode implements VisitorAcceptor
 {
 
-    public CombinedKeyNode( Object[] objects )
+    public CombinedKeyNode( int treeItemNumber, Object[] objects )
     {
-        super( objects );
+        super( treeItemNumber, objects );
     }
-    public CombinedKeyNode( Object[] objects, String referencedTableName, String referencedColumnName )
+    
+    public CombinedKeyNode( int treeItemNumber, Object[] objects, String referencedTableName, String referencedColumnName )
     {
-        super( objects, referencedTableName, referencedColumnName );
+        super( treeItemNumber, objects, referencedTableName, referencedColumnName );
     }   
 }

@@ -3,15 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/ChildNode.java</file>
-            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/ForeignKey.java</file>
-            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/PrimaryKey.java</file>
-            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/assembly/SchemaBuilder.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/extraction/SchemaExtractor.java</file>
             <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/control/Controller.java</file>
-            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/RootNode.java</file>
-            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/NonPrime.java</file>
-            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/CombinedKey.java</file>
-            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/Table.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/control/Start.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/persistence/MySQLConnection.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/treetable/tree/node/ForeignKeyNode.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/ConnectFrame.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/persistence/Connection.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/treetable/tree/node/PrimaryKeyNode.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/MainFrame.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/treetable/table/Table.java</file>
         </group>
     </open-files>
 </project-private>

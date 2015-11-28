@@ -2,9 +2,10 @@ package treetable.tree.node;
 
 public class PrimaryKeyNode extends treetable.tree.node.ChildNode implements VisitorAcceptor
 {
-    public PrimaryKeyNode( Object[] objects )
+
+    public PrimaryKeyNode( int treeItemNumber, Object[] object )
     {
-        super( objects );
+        super( treeItemNumber, object );
     }
     
     @Override
