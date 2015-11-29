@@ -1,5 +1,7 @@
 package persistence;
 
+import static java.lang.Class.forName;
+import static java.lang.System.err;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,6 +10,11 @@ import java.util.HashMap;
 
 import java.util.Set;
 import static java.sql.DriverManager.getConnection;
+import static persistence.ConnectionParameter.HOST;
+import static persistence.ConnectionParameter.PASSWORD;
+import static persistence.ConnectionParameter.PORT;
+import static persistence.ConnectionParameter.SCHEMA;
+import static persistence.ConnectionParameter.USERNAME;
 
 public class MySQLConnection implements Connection
 {
@@ -19,11 +26,11 @@ public class MySQLConnection implements Connection
     {
         try
         {
-            Class.forName( "com.mysql.jdbc.Driver" ).newInstance();
+            forName( "com.mysql.jdbc.Driver" ).newInstance();
         }
         catch ( ClassNotFoundException | InstantiationException | IllegalAccessException ex )
         {
-            System.err.println( ex.getMessage() );
+            err.println( ex.getMessage() );
         }
         parameters = new HashMap<>();
     }
@@ -32,11 +39,11 @@ public class MySQLConnection implements Connection
     public boolean connect( HashMap< ConnectionParameter, String> connectionParameters )
     {
         parameters = connectionParameters;
-        String host = connectionParameters.get( ConnectionParameter.HOST );
-        String port = connectionParameters.get( ConnectionParameter.PORT );
-        String user_name = connectionParameters.get( ConnectionParameter.USERNAME );
-        String password = connectionParameters.get( ConnectionParameter.PASSWORD );
-        String databaseName = connectionParameters.get( ConnectionParameter.SCHEMA );
+        String host = connectionParameters.get(HOST);
+        String port = connectionParameters.get(PORT);
+        String user_name = connectionParameters.get(USERNAME);
+        String password = connectionParameters.get(PASSWORD);
+        String databaseName = connectionParameters.get(SCHEMA);
 
         try
         {
@@ -45,7 +52,7 @@ public class MySQLConnection implements Connection
         }
         catch ( SQLException ex )
         {
-            System.err.println( ex.getMessage() );
+            err.println( ex.getMessage() );
         }
         return false;
     }
@@ -73,7 +80,7 @@ public class MySQLConnection implements Connection
         }
         catch ( SQLException ex )
         {
-            System.err.println( ex.getMessage() );
+            err.println( ex.getMessage() );
         }
         return null;
     }
@@ -90,7 +97,7 @@ public class MySQLConnection implements Connection
         }
         catch ( SQLException ex )
         {
-            System.err.println( ex.getMessage() );
+            err.println( ex.getMessage() );
         }
         return "";
     }
@@ -109,7 +116,7 @@ public class MySQLConnection implements Connection
         }
         catch ( SQLException ex )
         {
-            System.err.println( ex.getMessage() );
+            err.println( ex.getMessage() );
         }
         return new ArrayList<>();
     }

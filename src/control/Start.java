@@ -8,7 +8,7 @@ public class Start
     public static void main( String args[] )
     {
         Controller controller = new Controller();
-        
+
         MainFrame mainFrame = new MainFrame( controller );
         controller.setMainFrame( mainFrame );
         mainFrame.setLocationRelativeTo( null );

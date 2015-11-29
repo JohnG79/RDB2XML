@@ -3,17 +3,24 @@ package rdb2xml.ui;
 import control.Controller;
 import javax.swing.ImageIcon;
 
-public class ConnectFrame extends javax.swing.JFrame {
+
+public class ConnectFrame extends javax.swing.JFrame
+{
 
     private Controller controller;
-    
-    private ConnectFrame(){};
-    public ConnectFrame( Controller controller ) {
+
+    private ConnectFrame()
+    {
+    }
+
+    ;
+    public ConnectFrame( Controller controller )
+    {
         this.controller = controller;
         initComponents();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents()
     {
@@ -156,7 +163,8 @@ public class ConnectFrame extends javax.swing.JFrame {
     private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 
-    private void setIconImage(ImageIcon imageIcon) {
-        this.setIconImage(imageIcon.getImage());
+    private void setIconImage( ImageIcon imageIcon )
+    {
+        this.setIconImage( imageIcon.getImage() );
     }
 }

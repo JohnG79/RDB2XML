@@ -4,14 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import org.jdesktop.swingx.JXTreeTable;
 import persistence.Connection;
-import persistence.ConnectionParameter;
-import treetable.table.Table;
+import static persistence.ConnectionParameter.SCHEMA;
+import rdb2xml.ui.tree.table.Table;
 
 public class SchemaExtractor
 {
@@ -40,9 +38,9 @@ public class SchemaExtractor
             "Data Objects", "New Terms", "Property Range"
         } );
 
-        treeTable.setSchema( schemaName = connection.getConnectionParameter( ConnectionParameter.SCHEMA ) );
+        treeTable.setSchema(schemaName = connection.getConnectionParameter(SCHEMA) );
 
-        ArrayList< String> relationNames = importRelations( schemaName );
+        ArrayList< String > relationNames = importRelations( schemaName );
 
         for ( String relationName : relationNames )
         {
@@ -128,7 +126,6 @@ public class SchemaExtractor
             }
             catch ( SQLException ex )
             {
-                Logger.getLogger( SchemaExtractor.class.getName() ).log( Level.SEVERE, null, ex );
             }
         }
     }
