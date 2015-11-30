@@ -1,11 +1,28 @@
 package rdb2xml.ui.tree.node;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.jdesktop.swingx.treetable.MutableTreeTableNode;
+import org.jdesktop.swingx.treetable.TreeTableNode;
+
 public abstract class AbstractNonLeafNode extends AbstractNode
 {
 
     public AbstractNonLeafNode( int treeItemNumber, Object[] objects )
     {
         super( treeItemNumber, objects );
+    }
+
+    @Override
+    public Object[] getUserObject()
+    {
+        return super.getUserObject();
+    }
+
+    @Override
+    public void setUserObject( Object object )
+    {
+        super.setUserObject( object );
     }
 
     public int getTreeItemNumber()
@@ -22,12 +39,30 @@ public abstract class AbstractNonLeafNode extends AbstractNode
     @Override
     public void setAllowsChildren( boolean allowsChildren )
     {
-
     }
 
     @Override
     public boolean isLeaf()
     {
-        return false;
+        return getChildCount() == 0;
     }
+
+    @Override
+    protected List<MutableTreeTableNode> createChildrenList()
+    {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void add( MutableTreeTableNode child )
+    {
+        insert( child, getChildCount() );
+    }
+
+    @Override
+    public TreeTableNode getParent()
+    {
+        return parent;
+    }
+
 }

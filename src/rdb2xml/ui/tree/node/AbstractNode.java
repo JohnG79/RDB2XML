@@ -1,7 +1,5 @@
 package rdb2xml.ui.tree.node;
 
-import org.jdesktop.swingx.treetable.AbstractMutableTreeTableNode;
-
 public abstract class AbstractNode extends AbstractMutableTreeTableNode
 {
 
@@ -13,7 +11,7 @@ public abstract class AbstractNode extends AbstractMutableTreeTableNode
     {
     }
 
-    protected int treeItemNumber = -1;
+    protected int treeItemNumber;
 
     public AbstractNode( int treeItemNumber, Object[] objects )
     {
@@ -30,7 +28,7 @@ public abstract class AbstractNode extends AbstractMutableTreeTableNode
     @Override
     public void setValueAt( Object value, int columnIndex )
     {
-        getUserObject()[ columnIndex ] = value;
+        ( ( Object[] ) userObject )[ columnIndex ] = value;
     }
 
     @Override
@@ -46,6 +44,12 @@ public abstract class AbstractNode extends AbstractMutableTreeTableNode
     }
 
     @Override
+    public void setUserObject( Object object )
+    {
+        userObject = object;
+    }
+
+    @Override
     public boolean isEditable( int column )
     {
         return column != 0;
@@ -53,6 +57,16 @@ public abstract class AbstractNode extends AbstractMutableTreeTableNode
 
     public Object[] getData()
     {
-        return ( Object[] ) getUserObject();
+        return getUserObject();
+    }
+
+    public int getObjectCount()
+    {
+        return treeItemNumber;
+    }
+
+    public String getName()
+    {
+        return ( String ) ( ( Object[] ) super.getUserObject() )[ 0 ];
     }
 }

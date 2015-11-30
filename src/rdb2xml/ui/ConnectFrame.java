@@ -3,7 +3,6 @@ package rdb2xml.ui;
 import control.Controller;
 import javax.swing.ImageIcon;
 
-
 public class ConnectFrame extends javax.swing.JFrame
 {
 

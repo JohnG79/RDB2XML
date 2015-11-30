@@ -11,23 +11,20 @@ import persistence.Connection;
 import static persistence.ConnectionParameter.SCHEMA;
 import rdb2xml.ui.tree.table.Table;
 
-public class SchemaExtractor
+public class Schema
 {
 
     JComboBox relationNames_comboBox;
-
     private Table treeTable;
-
     private String schemaName;
-
     private final Connection connection;
 
-    public SchemaExtractor( Connection connection )
+    public Schema( Connection connection )
     {
         this.connection = connection;
     }
 
-    public JXTreeTable getSchema()
+    public JXTreeTable importSchema()
     {
         relationNames_comboBox = new JComboBox( new String[]
         {
@@ -38,23 +35,22 @@ public class SchemaExtractor
             "Data Objects", "New Terms", "Property Range"
         } );
 
-        treeTable.setSchema(schemaName = connection.getConnectionParameter(SCHEMA) );
+        treeTable.setSchemaName( schemaName = connection.getConnectionParameter( SCHEMA ) );
 
-        ArrayList< String > relationNames = importRelations( schemaName );
+        ArrayList< String> relationNames = importRelations( schemaName );
 
         for ( String relationName : relationNames )
         {
             treeTable.addRelation( relationName );
             relationNames_comboBox.addItem( relationName.substring( 0, 1 ).toUpperCase() + relationName.substring( 1 ) );
             importPrimaryKeys( relationName );
-            ImportForeignKeys( relationName );
             importNonKeys( relationName );
-
+        }
+        for ( String relationName : relationNames )
+        {
+            ImportForeignKeys( relationName );
         }
 
-        //relationNames.stream().forEach( this::importPrimaryKeys );
-        //relationNames.stream().forEach( this::ImportForeignKeys );
-        //relationNames.stream().forEach( this::importNonKeys );
         JComboBox datatype_comboBox = new JComboBox();
         datatype_comboBox.addItem( "xsd:string" );
         datatype_comboBox.addItem( "xsd:integer" );
@@ -62,23 +58,6 @@ public class SchemaExtractor
         datatype_comboBox.addItem( "xsd:anyURI" );
 
         return treeTable.getTreeTable( new JTextField(), relationNames_comboBox, datatype_comboBox );
-    }
-
-    private void importPrimaryKeys( String relationName )
-    {
-        String query = "SELECT column_name FROM information_schema.columns WHERE table_name = ? AND column_key = 'PRI' AND table_schema = ?";
-
-        HashMap< Integer, String> parameters = new HashMap<>();
-        parameters.put( 1, relationName );
-        parameters.put( 2, schemaName );
-
-        ArrayList< String> primaryKeyNames = connection.getResultList( connection.executeQuery( query, parameters ) );
-
-        primaryKeyNames.stream().forEach( ( String primaryKeyName )
-                -> 
-                {
-                    treeTable.addPrimaryKey( relationName, primaryKeyName );
-        } );
     }
 
     private void importNonKeys( String relationName )
@@ -94,6 +73,23 @@ public class SchemaExtractor
                 -> 
                 {
                     treeTable.addNonKey( relationName, nonKeyName ).setValueAt( "xsd:string", 2 );
+        } );
+    }
+
+    private void importPrimaryKeys( String relationName )
+    {
+        String query = "SELECT column_name FROM information_schema.columns WHERE table_name = ? AND column_key = 'PRI' AND table_schema = ?";
+
+        HashMap< Integer, String> parameters = new HashMap<>();
+        parameters.put( 1, relationName );
+        parameters.put( 2, schemaName );
+
+        ArrayList< String> primaryKeyNames = connection.getResultList( connection.executeQuery( query, parameters ) );
+
+        primaryKeyNames.stream().forEach( ( String primaryKeyName )
+                -> 
+                {
+                    treeTable.addPrimaryKey( relationName, primaryKeyName, "PK" + relationName );
         } );
     }
 
@@ -121,7 +117,7 @@ public class SchemaExtractor
                 ResultSet r = ( connection.executeQuery( query, parameters ) );
                 if ( r.next() )
                 {
-                    treeTable.addForeignKey( relationName, foreignKeyName, r.getString( "referenced_table_name" ), r.getString( "REFERENCED_COLUMN_NAME" ) );
+                    treeTable.addForeignKey( relationName, foreignKeyName, r.getString( "referenced_table_name" ), r.getString( "REFERENCED_COLUMN_NAME" ), "FK" + relationName + "_" + foreignKeyName );
                 }
             }
             catch ( SQLException ex )

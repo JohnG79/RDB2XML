@@ -1,35 +1,38 @@
 package rdb2xml.ui.tree.node;
 
+import Visitor.Visitor;
+
 public class ForeignKeyNode extends AbstractLeafNode implements Foreign
 {
 
-    private final String referencedRelationName;
-    private final String referencedAttributeName;
+    private final String constraintName;
+    private final Primary referencedPrimary;
 
-    public ForeignKeyNode( int treeItemNumber, Object[] objects )
+    public ForeignKeyNode( int treeItemNumber, Object[] objects, String referencedRelationName, String referencedKeyName, String constraintName, Primary referencedPrimary )
     {
         super( treeItemNumber, objects );
-        referencedRelationName = "REFERENCED_RELATIONSCHEMA_NOT_SET";
-        referencedAttributeName = "REFERENCED_ATTRIBUTE_NOT_SET";
+        super.setValueAt( referencedRelationName.substring( 0, 1 ).toUpperCase() + referencedRelationName.substring( 1 ), 2 );
+        this.userObject = objects;
+        this.allowsChildren = false;
+        this.constraintName = constraintName;
+        this.referencedPrimary = referencedPrimary;
     }
 
-    public ForeignKeyNode( int treeItemNumber, Object[] objects, String referencedRelationSchemaName, String referencedAttributeName )
+    @Override
+    public String getConstraintName()
     {
-        super( treeItemNumber, objects );
-        this.referencedRelationName = referencedRelationSchemaName;
-        this.referencedAttributeName = referencedAttributeName;
-        super.setValueAt( referencedRelationSchemaName.substring( 0, 1 ).toUpperCase() + referencedRelationSchemaName.substring( 1 ), 2 );
-    }
-
-    public String getReferencedRelationSchemaName()
-    {
-        return referencedRelationName;
+        return constraintName;
     }
 
     @Override
     public Primary getReferencedPrimary()
     {
-        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        return referencedPrimary;
     }
 
+    @Override
+    public void acceptVisitor( Visitor visitor )
+    {
+        visitor.visit( this );
+    }
 }

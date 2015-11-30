@@ -1,20 +1,40 @@
 package rdb2xml.ui.tree.node;
 
+import Visitor.Visitor;
+
 public class PrimaryKeyNode extends AbstractLeafNode implements Primary
 {
 
-    public PrimaryKeyNode( int treeItemNumber, Object[] object )
+    private final String constraintName;
+
+    public PrimaryKeyNode( int treeItemNumber, Object[] objects, String constaintName )
     {
-        super( treeItemNumber, object );
+        super( treeItemNumber, objects );
+        this.userObject = objects;
+        this.allowsChildren = false;
+        this.constraintName = constaintName;
     }
 
     @Override
-    /**
-     * Are the rows that represent PrimaryKeyNodes editable?
-     */
+    public String getConstraintName()
+    {
+        return constraintName;
+    }
+
+    public void setParent( RelationNode relationNode )
+    {
+        parent = relationNode;
+    }
+
+    @Override
     public boolean isEditable( int column )
     {
         return column != 0 && column != 2;
     }
 
+    @Override
+    public void acceptVisitor( Visitor visitor )
+    {
+        visitor.visit( this );
+    }
 }

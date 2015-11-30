@@ -1,12 +1,5 @@
 package rdb2xml.ui.tree.table;
 
-import rdb2xml.ui.tree.node.RelationNode;
-import rdb2xml.ui.tree.node.PrimaryKeyNode;
-import rdb2xml.ui.tree.node.NonKeyNode;
-import rdb2xml.ui.tree.node.CombinedKeyNode;
-import rdb2xml.ui.tree.node.ForeignKeyNode;
-import rdb2xml.ui.tree.node.SchemaNode;
-import rdb2xml.ui.tree.node.AbstractNode;
 import java.awt.*;
 import java.util.*;
 import static java.util.Arrays.asList;
@@ -22,6 +15,15 @@ import static org.jdesktop.swingx.decorator.HighlightPredicate.IS_SELECTED;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.MutableTreeTableNode;
 import rdb2xml.ui.tree.node.AbstractLeafNode;
+import rdb2xml.ui.tree.node.AbstractNode;
+import rdb2xml.ui.tree.node.Attribute;
+import rdb2xml.ui.tree.node.CombinedKeyNode;
+import rdb2xml.ui.tree.node.ForeignKeyNode;
+import rdb2xml.ui.tree.node.NonKeyNode;
+import rdb2xml.ui.tree.node.Primary;
+import rdb2xml.ui.tree.node.PrimaryKeyNode;
+import rdb2xml.ui.tree.node.RelationNode;
+import rdb2xml.ui.tree.node.SchemaNode;
 
 public class Table
 {
@@ -51,18 +53,8 @@ public class Table
             "SCHEMA_NAME_NOT_SET"
         } );
     }
-
-    public Table( String[] columnHeadings, String dataSchemaName )
-    {
-        treeItemNumber = 1;
-        this.columnHeadings = columnHeadings;
-        this.schemaNode = new SchemaNode( 0, new String[]
-        {
-            dataSchemaName
-        } );
-    }
-
-    public void setSchema( String schemaName )
+    
+    public void setSchemaName( String schemaName )
     {
         this.schemaNode.setUserObject( new String[]
         {
@@ -93,30 +85,11 @@ public class Table
         return this.schemaNode.children();
     }
 
-    public void addPrimaryKey( String relationName, String primaryKeyName )
-    {
-        PrimaryKeyNode newPrimaryKeyNode = new PrimaryKeyNode( treeItemNumber, new Object[]
-        {
-            primaryKeyName, primaryKeyName + " ( " + treeItemNumber + " )", ""
-        } );
-
-        Enumeration< RelationNode> relationNodes = ( Enumeration<RelationNode> ) getRelationNodes();
-        while ( relationNodes.hasMoreElements() )
-        {
-            RelationNode relationNode = relationNodes.nextElement();
-            if ( relationNode.getValueAt( 0 ).toString().equals( relationName ) )
-            {
-                relationNode.add( newPrimaryKeyNode );
-            }
-        }
-        treeItemNumber++;
-    }
-
     public NonKeyNode addNonKey( String relationName, String nonKeyName )
     {
         NonKeyNode newNonKeyNode = new NonKeyNode( treeItemNumber, new String[]
         {
-            nonKeyName, nonKeyName + " ( " + treeItemNumber + " )", ""
+            nonKeyName, nonKeyName, ""
         } );
         Enumeration< RelationNode> relationNodes = ( Enumeration<RelationNode> ) getRelationNodes();
         while ( relationNodes.hasMoreElements() )
@@ -133,12 +106,31 @@ public class Table
         return newNonKeyNode;
     }
 
-    public CombinedKeyNode addCombinedKey( String combinedKeyName, String referencedTableName, String referencedColumnName )
+    public void addPrimaryKey( String relationName, String primaryKeyName, String constraintName )
+    {
+        PrimaryKeyNode newPrimaryKeyNode = new PrimaryKeyNode( treeItemNumber, new Object[]
+        {
+            primaryKeyName, primaryKeyName, ""
+        }, constraintName );
+
+        Enumeration< RelationNode> relationNodes = ( Enumeration<RelationNode> ) getRelationNodes();
+        while ( relationNodes.hasMoreElements() )
+        {
+            RelationNode relationNode = relationNodes.nextElement();
+            if ( relationNode.getValueAt( 0 ).toString().equals( relationName ) )
+            {
+                relationNode.add( newPrimaryKeyNode );
+            }
+        }
+        treeItemNumber++;
+    }
+
+    public CombinedKeyNode addCombinedKey( String combinedKeyName, String referencedTableName, String referencedColumnName, String constraintName )
     {
         CombinedKeyNode newCombinedKeyNode = new CombinedKeyNode( treeItemNumber, new String[]
         {
-            combinedKeyName, combinedKeyName + " ( " + treeItemNumber + " )", ""
-        }, referencedTableName, referencedColumnName );
+            combinedKeyName, combinedKeyName, ""
+        }, referencedTableName, referencedColumnName, constraintName, getReferencedPrimary( referencedTableName, referencedColumnName ) );
         currentRelationNode.add( newCombinedKeyNode );
         // record table row number of each foreign key
         foreignKey_rowNumbers.add( treeItemNumber );
@@ -147,7 +139,7 @@ public class Table
 
     }
 
-    public boolean addForeignKey( String relationName, String foreignKeyName, String referencedSchemaName, String referencedKeyName )
+    public boolean addForeignKey( String relationName, String foreignKeyName, String referencedTableName, String referencedColumnName, String constraintName )
     {
         Enumeration< RelationNode> relationNodes = ( Enumeration<RelationNode> ) getRelationNodes();
         while ( relationNodes.hasMoreElements() )
@@ -167,27 +159,44 @@ public class Table
                     {
                         int index = relationNode.getIndex( attribute );
                         relationNode.remove( index );
-                        CombinedKeyNode newCombinedKey;
-                        relationNode.insert( newCombinedKey = new CombinedKeyNode( attribute.getTreeItemNumber(), new Object[]
+                        relationNode.insert( new CombinedKeyNode( attribute.getTreeItemNumber(), new Object[]
                         {
-                            "( C ) " + foreignKeyName, "( C ) " + foreignKeyName + " ( " + attribute.getTreeItemNumber() + " ) ", ""
-                        }, referencedSchemaName, referencedKeyName ), index );
+                            foreignKeyName, foreignKeyName, ""
+                        }, referencedTableName, referencedColumnName, constraintName, getReferencedPrimary( referencedTableName, referencedColumnName ) ), index );
 
                         foreignKey_rowNumbers.add( attribute.getTreeItemNumber() );
                         return true;
                     }
                 }
-                ForeignKeyNode foreignKeyNode;
-                relationNode.add( foreignKeyNode = new ForeignKeyNode( treeItemNumber, new Object[]
+                relationNode.add( new ForeignKeyNode( treeItemNumber, new Object[]
                 {
-                    "( F ) " + foreignKeyName, "( F ) " + foreignKeyName + " ( " + treeItemNumber + " )", ""
-                }, referencedSchemaName, referencedKeyName ) );
+                    foreignKeyName, foreignKeyName, ""
+                }, referencedTableName, referencedColumnName, constraintName, getReferencedPrimary( referencedTableName, referencedColumnName ) ) );
 
                 foreignKey_rowNumbers.add( treeItemNumber );
                 treeItemNumber++;
             }
         }
         return false;
+    }
+
+    private Primary getReferencedPrimary( String relationName, String keyName )
+    {
+        ArrayList< RelationNode> relations = ( ArrayList< RelationNode> ) this.schemaNode.getRelations();
+        for ( RelationNode relationNode : relations )
+        {
+            if ( relationNode.getName().equals( relationName ) )
+            {
+                for ( Attribute attribute : relationNode.getAttributes() )
+                {
+                    if ( ( ( PrimaryKeyNode ) attribute ).getName().equals( keyName ) )
+                    {
+                        return ( Primary ) attribute;
+                    }
+                }
+            }
+        }
+        throw new IllegalStateException( "Referenced primary key doesn't exist!" );
     }
 
     public JXTreeTable getTreeTable( JTextField termsColumn_textField, JComboBox relationSchemaComboBox, JComboBox datatypesComboBox )
@@ -366,8 +375,8 @@ public class Table
                 return component;
             }
         }
-        AlternatingRowHighlighter alternatingRowHighlighter = new AlternatingRowHighlighter( EVEN);
-        SelectedRowHighlighter selectedRowHighlighter = new SelectedRowHighlighter( IS_SELECTED);
+        AlternatingRowHighlighter alternatingRowHighlighter = new AlternatingRowHighlighter( EVEN );
+        SelectedRowHighlighter selectedRowHighlighter = new SelectedRowHighlighter( IS_SELECTED );
 
         class TreeIconRenderer extends DefaultTreeCellRenderer
         {

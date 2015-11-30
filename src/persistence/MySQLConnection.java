@@ -2,14 +2,13 @@ package persistence;
 
 import static java.lang.Class.forName;
 import static java.lang.System.err;
+import static java.sql.DriverManager.getConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.util.Set;
-import static java.sql.DriverManager.getConnection;
 import static persistence.ConnectionParameter.HOST;
 import static persistence.ConnectionParameter.PASSWORD;
 import static persistence.ConnectionParameter.PORT;
@@ -39,11 +38,11 @@ public class MySQLConnection implements Connection
     public boolean connect( HashMap< ConnectionParameter, String> connectionParameters )
     {
         parameters = connectionParameters;
-        String host = connectionParameters.get(HOST);
-        String port = connectionParameters.get(PORT);
-        String user_name = connectionParameters.get(USERNAME);
-        String password = connectionParameters.get(PASSWORD);
-        String databaseName = connectionParameters.get(SCHEMA);
+        String host = connectionParameters.get( HOST );
+        String port = connectionParameters.get( PORT );
+        String user_name = connectionParameters.get( USERNAME );
+        String password = connectionParameters.get( PASSWORD );
+        String databaseName = connectionParameters.get( SCHEMA );
 
         try
         {
