@@ -9,31 +9,34 @@ import javax.swing.JTextField;
 import org.jdesktop.swingx.JXTreeTable;
 import persistence.Connection;
 import static persistence.ConnectionParameter.SCHEMA;
+import persistence.DataFormat;
+import rdb2xml.ui.tree.node.Attribute;
+import rdb2xml.ui.tree.node.Key;
+import rdb2xml.ui.tree.node.NonKeyNode;
+import rdb2xml.ui.tree.table.RDFTable;
 import rdb2xml.ui.tree.table.Table;
+import rdb2xml.ui.tree.table.XMLTable;
 
-public class Schema
+public class Database
 {
 
-    JComboBox relationNames_comboBox;
     private Table treeTable;
     private String schemaName;
     private final Connection connection;
+    JComboBox relationNames_comboBox;
 
-    public Schema( Connection connection )
+    public Database( Connection connection )
     {
         this.connection = connection;
     }
 
-    public JXTreeTable importSchema()
+    public JXTreeTable importSchema( DataFormat dataFormat )
     {
         relationNames_comboBox = new JComboBox( new String[]
         {
         } );
 
-        treeTable = new Table( new String[]
-        {
-            "Data Objects", "New Terms", "Property Range"
-        } );
+        treeTable = ( dataFormat == DataFormat.XML ? new XMLTable() : new RDFTable() );
 
         treeTable.setSchemaName( schemaName = connection.getConnectionParameter( SCHEMA ) );
 
@@ -56,7 +59,6 @@ public class Schema
         datatype_comboBox.addItem( "xsd:integer" );
         datatype_comboBox.addItem( "xsd:decimal" );
         datatype_comboBox.addItem( "xsd:anyURI" );
-
         return treeTable.getTreeTable( new JTextField(), relationNames_comboBox, datatype_comboBox );
     }
 
@@ -72,7 +74,7 @@ public class Schema
         non_key_names.stream().forEach( ( nonKeyName )
                 -> 
                 {
-                    treeTable.addNonKey( relationName, nonKeyName ).setValueAt( "xsd:string", 2 );
+                    treeTable.addNonKey( relationName, nonKeyName ).setValueAt( getXSDDatatype( getDatatype( relationName, nonKeyName ) ), 2 );
         } );
     }
 
@@ -89,7 +91,8 @@ public class Schema
         primaryKeyNames.stream().forEach( ( String primaryKeyName )
                 -> 
                 {
-                    treeTable.addPrimaryKey( relationName, primaryKeyName, "PK" + relationName );
+                    Attribute a = ( treeTable.addPrimaryKey( relationName, primaryKeyName, "PK" + relationName ) );
+                    a.setDatatype( getXSDDatatype( getDatatype( relationName, primaryKeyName ) ) );
         } );
     }
 
@@ -105,6 +108,7 @@ public class Schema
 
         for ( String foreignKeyName : foreign_key_names )
         {
+
             query = "SELECT * FROM information_schema.key_column_usage WHERE table_name = ? AND constraint_name != 'PRIMARY' AND constraint_name != column_name AND column_name = ? AND table_schema = ?";
 
             parameters = new HashMap<>();
@@ -117,7 +121,11 @@ public class Schema
                 ResultSet r = ( connection.executeQuery( query, parameters ) );
                 if ( r.next() )
                 {
-                    treeTable.addForeignKey( relationName, foreignKeyName, r.getString( "referenced_table_name" ), r.getString( "REFERENCED_COLUMN_NAME" ), "FK" + relationName + "_" + foreignKeyName );
+                    getXSDDatatype( getDatatype( relationName, foreignKeyName ) );
+
+                    Attribute a = ( treeTable.addForeignKey( relationName, foreignKeyName, r.getString( "referenced_table_name" ), r.getString( "REFERENCED_COLUMN_NAME" ), "FK" + relationName + "_" + foreignKeyName ) );
+                    a.setDatatype( getXSDDatatype( getDatatype( relationName, foreignKeyName ) ) );
+
                 }
             }
             catch ( SQLException ex )
@@ -126,21 +134,43 @@ public class Schema
         }
     }
 
+    private String getDatatype( String relationName, String nonKeyName )
+    {
+        String query = "SELECT data_type FROM information_schema.columns WHERE table_schema = ? AND table_name = ? AND column_name = ?";
+        HashMap< Integer, String> parameters = new HashMap<>();
+        parameters.put( 1, schemaName );
+        parameters.put( 2, relationName );
+        parameters.put( 3, nonKeyName );
+
+        return connection.getFirstResult( connection.executeQuery( query, parameters ) );
+    }
+
+    private String getXSDDatatype( String dataType )
+    {
+        if ( dataType.toLowerCase().contains( "int" ) )
+        {
+            return "xsd:integer";
+        }
+        else if ( dataType.toLowerCase().contains( "dec" ) )
+        {
+            return "xsd:decimal";
+        }
+        else if ( dataType.toLowerCase().contains( "date" ) )
+        {
+            return "xsd:date";
+        }
+        else
+        {
+            return "xsd:string";
+        }
+    }
+
     private ArrayList< String> importRelations( String schemaName )
     {
         String query = "SELECT DISTINCT table_name FROM information_schema.key_column_usage WHERE table_schema = ?";
-
         HashMap< Integer, String> parameters = new HashMap<>();
         parameters.put( 1, schemaName );
-
-        ArrayList< String> relationNames = connection.getResultList( connection.executeQuery( query, parameters ) );
-        relationNames.stream().forEach( ( String relationName )
-                -> 
-                {
-                    //treeTable.addRelation( relationName );
-                    //relationNames_comboBox.addItem( relationName.substring( 0, 1 ).toUpperCase() + relationName.substring( 1 ) );
-        } );
-        return relationNames;
+        return connection.getResultList( connection.executeQuery( query, parameters ) );
     }
 
 }

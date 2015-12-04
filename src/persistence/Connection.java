@@ -9,6 +9,8 @@ public interface Connection
 
     public boolean connect( HashMap< ConnectionParameter, String> connectionParameters );
 
+    public boolean isConnected();
+
     public ResultSet executeQuery( String query, HashMap< Integer, String> parameters );
 
     public String getFirstResult( ResultSet resultSet );
@@ -16,4 +18,5 @@ public interface Connection
     public ArrayList< String> getResultList( ResultSet resultSet );
 
     public String getConnectionParameter( ConnectionParameter parameter );
+
 }

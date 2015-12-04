@@ -1,5 +1,7 @@
 package Visitor;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -273,6 +275,23 @@ public class XSDBuilder implements Visitor
         }
     }
 
+    public void print( File file )
+    {
+        try
+        {
+            OutputFormat format = new OutputFormat( document );
+            format.setIndenting( true );
+
+            XMLSerializer serializer = new XMLSerializer(
+                    new FileOutputStream( file ), format );
+
+            serializer.serialize( document );
+        }
+        catch ( IOException ioe )
+        {
+        }
+    }
+
     @Override
     public void visit( SchemaNode schemaNode )
     {
@@ -316,14 +335,14 @@ public class XSDBuilder implements Visitor
     public void visit( NonKeyNode visiting_non_key )
     {
         String attribute_name = visiting_non_key.getName();
-        add_xsd_element_element( current_attributes_root, attribute_name, xsd_namespace_prefix + ":string" );
+        add_xsd_element_element( current_attributes_root, attribute_name, visiting_non_key.getDatatype() );
     }
 
     @Override
     public void visit( Key key )
     {
         String keyName = ( ( PrimaryKeyNode ) key ).getName();
-        add_xsd_attribute_element( ( Element ) current_attributes_root.getParentNode(), keyName, xsd_namespace_prefix + ":string", "required" );
+        add_xsd_attribute_element( ( Element ) current_attributes_root.getParentNode(), keyName, ( ( PrimaryKeyNode ) key ).getDatatype(), "required" );
 
         String constraintName = key.getConstraintName();
         String parentRelation = key.getParent().getName();
@@ -350,7 +369,7 @@ public class XSDBuilder implements Visitor
     {
         String foreign_key_name;
         String attribute_name = foreignKeyNode.getName();
-        add_xsd_element_element( current_attributes_root, attribute_name, xsd_namespace_prefix + ":string" );
+        add_xsd_element_element( current_attributes_root, attribute_name, foreignKeyNode.getDatatype() );
         foreign_key_name = foreignKeyNode.getName();
 
         String constraint_name = foreignKeyNode.getConstraintName();
@@ -369,7 +388,7 @@ public class XSDBuilder implements Visitor
         String foreign_key_name;
 
         String attribute_name = combinedKeyNode.getName();
-        add_xsd_attribute_element( ( Element ) current_attributes_root.getParentNode(), attribute_name, xsd_namespace_prefix + ":string", "required" );
+        add_xsd_attribute_element( ( Element ) current_attributes_root.getParentNode(), attribute_name, combinedKeyNode.getDatatype() );
         foreign_key_name = "@" + combinedKeyNode.getName();
 
         String constraintName = combinedKeyNode.getConstraintName();
@@ -383,8 +402,8 @@ public class XSDBuilder implements Visitor
 
         PrimaryKeyNode key = new PrimaryKeyNode( 0, new Object[]
         {
-            combinedKeyNode.getName(), combinedKeyNode.getName(), ""
-        }, combinedKeyNode.getConstraintName() );
+            combinedKeyNode.getName(), combinedKeyNode.getName(), "", ""
+        }, combinedKeyNode.getConstraintName(), combinedKeyNode.getValueAt( 3 ).toString() );
         key.setParent( combinedKeyNode.getParent() );
 
         String keyName = key.getName();

@@ -48,7 +48,7 @@ public class RDFTable extends Table
         relationsComboBox.setFont( new Font( "Courier new", Font.PLAIN, 16 ) );
         datatypesComboBox.setFont( new Font( "Courier new", Font.PLAIN, 16 ) );
         textField.setFont( new Font( "Courier new", Font.PLAIN, 16 ) );
-        
+
         for ( RelationNode relationNode : schemaNode.getRelations() )
         {
             relationNode.setEditable( 1 );

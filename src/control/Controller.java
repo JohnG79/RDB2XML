@@ -1,17 +1,17 @@
 package control;
 
 import Visitor.XSDBuilder;
-import extraction.Schema;
+import extraction.Database;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.jdesktop.swingx.JXTreeTable;
 import persistence.Connection;
 import persistence.ConnectionParameter;
-import static persistence.ConnectionParameter.HOST;
-import static persistence.ConnectionParameter.PASSWORD;
-import static persistence.ConnectionParameter.PORT;
-import static persistence.ConnectionParameter.SCHEMA;
-import static persistence.ConnectionParameter.USERNAME;
+import persistence.DataFormat;
 import persistence.MySQLConnection;
 import rdb2xml.ui.*;
 import rdb2xml.ui.tree.node.SchemaNode;
@@ -19,48 +19,79 @@ import rdb2xml.ui.tree.node.SchemaNode;
 public class Controller
 {
 
-    private ConnectFrame connectFrame;
+    private Connection sqlConnection;
+    private ConnectionDialog connectFrame;
+    private Main mainFrame;
+    private JXTreeTable treeTable;
+    private XSDBuilder xsdBuilder;
 
-    public void initiateConnect()
+    public void openConnectionDialog()
     {
-        connectFrame = new ConnectFrame( this );
+        connectFrame = new ConnectionDialog( this );
         connectFrame.setLocationRelativeTo( null );
         connectFrame.setVisible( true );
+        mainFrame.setEnabled( false );
     }
 
-    private MainFrame mainFrame;
-
-    public void setMainFrame( MainFrame mainFrame )
+    public void setMainFrame( Main mainFrame )
     {
         this.mainFrame = mainFrame;
     }
-    JXTreeTable treeTable;
 
-    public void connect( String host, String port, String database, String username, String password )
+    public void connect( HashMap< ConnectionParameter, String> connectionParams, DataFormat dataFormat )
     {
+        sqlConnection = new MySQLConnection();
+        sqlConnection.connect( connectionParams );
+        importSchema( dataFormat );
+        mainFrame.setEnabled( true );
+    }
 
-        HashMap< ConnectionParameter, String> parameters = new HashMap<>();
-        parameters.put( HOST, host );
-        parameters.put( PORT, port );
-        parameters.put( SCHEMA, database );
-        parameters.put( USERNAME, username );
-        parameters.put( PASSWORD, password );
+    public void save( File file )
+    {
+        xsdBuilder.print( file );
+    }
 
-        Connection connection = new MySQLConnection();
-        if ( connection.connect( parameters ) )
+    public void enableMainForm()
+    {
+        mainFrame.setEnabled( true );
+        mainFrame.setVisible( true );
+    }
+
+    public void save( RSyntaxTextArea rSyntaxTextArea, File file )
+    {
+        try
         {
-            Schema schema = new Schema( connection );
-            mainFrame.setSchema( treeTable = schema.importSchema() );
+            BufferedWriter outFile;
+            outFile = new BufferedWriter( new FileWriter( file ) );
+            rSyntaxTextArea.write( outFile );
+            try
+            {
+                outFile.close();
+            }
+            catch ( IOException e )
+            {
+            }
+        }
+        catch ( IOException ex )
+        {
         }
     }
 
-    public void translateXSD( RSyntaxTextArea syntaxTextArea )
+    private void importSchema( DataFormat dataFormat )
     {
-        XSDBuilder xsdBuilder = new XSDBuilder();
+        if ( sqlConnection.isConnected() )
+        {
+            Database database = new Database( sqlConnection );
+            mainFrame.setSchema( treeTable = database.importSchema( dataFormat ) );
+        }
+    }
+
+    public void exportSchema( RSyntaxTextArea syntaxTextArea )
+    {
+        xsdBuilder = new XSDBuilder();
         SchemaNode schemaNode = ( SchemaNode ) treeTable.getTreeTableModel().getRoot();
         schemaNode.acceptVisitor( xsdBuilder );
 
         xsdBuilder.print( syntaxTextArea );
-
     }
 }

@@ -1,19 +1,21 @@
 package rdb2xml.ui;
 
 import control.Controller;
+import java.util.HashMap;
 import javax.swing.ImageIcon;
+import persistence.ConnectionParameter;
+import persistence.DataFormat;
 
-public class ConnectFrame extends javax.swing.JFrame
+public class ConnectionDialog extends javax.swing.JFrame
 {
 
     private Controller controller;
 
-    private ConnectFrame()
+    private ConnectionDialog()
     {
     }
 
-    ;
-    public ConnectFrame( Controller controller )
+    public ConnectionDialog( Controller controller )
     {
         this.controller = controller;
         initComponents();
@@ -24,6 +26,7 @@ public class ConnectFrame extends javax.swing.JFrame
     private void initComponents()
     {
 
+        formatButtonGroup = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -35,11 +38,15 @@ public class ConnectFrame extends javax.swing.JFrame
         username = new javax.swing.JTextField();
         password = new javax.swing.JPasswordField();
         cancel = new javax.swing.JButton();
-        connect = new javax.swing.JButton();
+        connectButton = new javax.swing.JButton();
+        rdfRadioButton = new javax.swing.JRadioButton();
+        xmlRadioButton = new javax.swing.JRadioButton();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MySQL Connection");
         setIconImage(new ImageIcon("C:\\Users\\johng\\Documents\\NetBeansProjects\\RDB2XML\\Resources\\mysql-icon.jpg"));
+        setResizable(false);
 
         jLabel1.setText("Host Name");
 
@@ -70,37 +77,58 @@ public class ConnectFrame extends javax.swing.JFrame
             }
         });
 
-        connect.setText("Connect");
-        connect.addActionListener(new java.awt.event.ActionListener()
+        connectButton.setText("Connect");
+        connectButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                connectActionPerformed(evt);
+                connectButtonActionPerformed(evt);
             }
         });
+
+        formatButtonGroup.add(rdfRadioButton);
+        rdfRadioButton.setText("RDF");
+
+        formatButtonGroup.add(xmlRadioButton);
+        xmlRadioButton.setSelected(true);
+        xmlRadioButton.setText("XML");
+        xmlRadioButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                xmlRadioButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Format");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(port, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(database, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(username, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(xmlRadioButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rdfRadioButton)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(46, 46, 46)
-                        .addComponent(connect)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(connectButton))
+                    .addComponent(port, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(database, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                    .addComponent(username, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(password, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(host))
                 .addContainerGap())
@@ -128,38 +156,60 @@ public class ConnectFrame extends javax.swing.JFrame
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(3, 3, 3)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(connect)
+                    .addComponent(rdfRadioButton)
+                    .addComponent(xmlRadioButton)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(connectButton)
                     .addComponent(cancel))
-                .addContainerGap())
+                .addGap(10, 10, 10))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectActionPerformed
-        controller.connect( host.getText(), port.getText(), database.getText(), username.getText(), password.getText() );
+    private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectButtonActionPerformed
+
+        HashMap<ConnectionParameter, String> connectionParams = new HashMap<>();
+        connectionParams.put( ConnectionParameter.HOST, host.getText() );
+        connectionParams.put( ConnectionParameter.PORT, port.getText() );
+        connectionParams.put( ConnectionParameter.SCHEMA, database.getText() );
+        connectionParams.put( ConnectionParameter.USERNAME, username.getText() );
+        connectionParams.put( ConnectionParameter.PASSWORD, password.getText() );
+        controller.connect( connectionParams, ( xmlRadioButton.isSelected() ? DataFormat.XML : DataFormat.RDF ) );
         this.dispose();
-    }//GEN-LAST:event_connectActionPerformed
+    }//GEN-LAST:event_connectButtonActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         this.dispose();
+        controller.enableMainForm();
     }//GEN-LAST:event_cancelActionPerformed
+
+    private void xmlRadioButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_xmlRadioButtonActionPerformed
+    {//GEN-HEADEREND:event_xmlRadioButtonActionPerformed
+
+    }//GEN-LAST:event_xmlRadioButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
-    private javax.swing.JButton connect;
+    private javax.swing.JButton connectButton;
     private javax.swing.JTextField database;
+    private javax.swing.ButtonGroup formatButtonGroup;
     private javax.swing.JTextField host;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPasswordField password;
     private javax.swing.JTextField port;
+    private javax.swing.JRadioButton rdfRadioButton;
     private javax.swing.JTextField username;
+    private javax.swing.JRadioButton xmlRadioButton;
     // End of variables declaration//GEN-END:variables
 
     private void setIconImage( ImageIcon imageIcon )

@@ -12,6 +12,7 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 public class RelationNode extends AbstractNonLeafNode implements SchemaObject
 {
 
+    private final ArrayList<Integer> editableColumns;
     private final List<Attribute> children;
 
     public RelationNode( int treeItemNumber, Object[] objects )
@@ -20,6 +21,7 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
         this.userObject = objects;
         this.allowsChildren = true;
         children = new ArrayList<>();
+        editableColumns = new ArrayList<>();
     }
 
     public List<Attribute> getAttributes()
@@ -54,6 +56,17 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
     {
         MutableTreeTableNode a = ( MutableTreeTableNode ) children.remove( index );
         a.setParent( null );
+    }
+
+    public void setEditable( int i )
+    {
+        editableColumns.add( i );
+    }
+
+    @Override
+    public boolean isEditable( int i )
+    {
+        return editableColumns.contains( i );
     }
 
     @Override
@@ -97,5 +110,10 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
     public void acceptVisitor( Visitor visitor )
     {
         visitor.visit( this );
+    }
+
+    public void setUneditable( int i )
+    {
+        editableColumns.remove( editableColumns.indexOf( i ) );
     }
 }

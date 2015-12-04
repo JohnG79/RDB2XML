@@ -57,6 +57,21 @@ public class MySQLConnection implements Connection
     }
 
     @Override
+    public boolean isConnected()
+    {
+        boolean isConnected = false;
+        try
+        {
+            isConnected = connection.isValid( 2 );
+        }
+        catch ( SQLException ex )
+        {
+            err.println( ex.getMessage() );
+        }
+        return isConnected;
+    }
+
+    @Override
     public String getConnectionParameter( ConnectionParameter parameter )
     {
         return parameters.get( parameter );

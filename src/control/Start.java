@@ -1,6 +1,6 @@
 package control;
 
-import rdb2xml.ui.MainFrame;
+import rdb2xml.ui.Main;
 
 public class Start
 {
@@ -9,7 +9,7 @@ public class Start
     {
         Controller controller = new Controller();
 
-        MainFrame mainFrame = new MainFrame( controller );
+        Main mainFrame = new Main( controller );
         controller.setMainFrame( mainFrame );
         mainFrame.setLocationRelativeTo( null );
         mainFrame.setVisible( true );

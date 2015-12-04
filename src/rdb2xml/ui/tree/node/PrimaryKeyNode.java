@@ -7,9 +7,10 @@ public class PrimaryKeyNode extends AbstractLeafNode implements Primary
 
     private final String constraintName;
 
-    public PrimaryKeyNode( int treeItemNumber, Object[] objects, String constaintName )
+    public PrimaryKeyNode( int treeItemNumber, Object[] objects, String constaintName, String dataType )
     {
         super( treeItemNumber, objects );
+        super.setValueAt( dataType, 3 );
         this.userObject = objects;
         this.allowsChildren = false;
         this.constraintName = constaintName;
@@ -36,5 +37,17 @@ public class PrimaryKeyNode extends AbstractLeafNode implements Primary
     public void acceptVisitor( Visitor visitor )
     {
         visitor.visit( this );
+    }
+
+    @Override
+    public String getDatatype()
+    {
+        return ( String ) getValueAt( 3 );
+    }
+
+    @Override
+    public void setDatatype( String dataType )
+    {
+        setValueAt( dataType, 3 );
     }
 }
