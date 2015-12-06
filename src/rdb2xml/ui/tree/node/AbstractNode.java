@@ -1,22 +1,21 @@
 package rdb2xml.ui.tree.node;
 
+import java.util.ArrayList;
+
 public abstract class AbstractNode extends AbstractMutableTreeTableNode
 {
+
+    private ArrayList<Integer> editableColumns;
+    private int columnCount = 1;
 
     private AbstractNode()
     {
     }
 
-    private AbstractNode( Object[] objects )
-    {
-    }
-
-    protected int treeItemNumber;
-
-    public AbstractNode( int treeItemNumber, Object[] objects )
+    public AbstractNode( Object[] objects )
     {
         super( objects );
-        this.treeItemNumber = treeItemNumber;
+        editableColumns = new ArrayList<>();
     }
 
     @Override
@@ -26,15 +25,14 @@ public abstract class AbstractNode extends AbstractMutableTreeTableNode
     }
 
     @Override
-    public void setValueAt( Object value, int columnIndex )
-    {
-        ( ( Object[] ) userObject )[ columnIndex ] = value;
-    }
-
-    @Override
     public int getColumnCount()
     {
-        return getData().length;
+        return columnCount;
+    }
+
+    public int setColumnCount( int columnCount )
+    {
+        return columnCount;
     }
 
     @Override
@@ -49,24 +47,27 @@ public abstract class AbstractNode extends AbstractMutableTreeTableNode
         userObject = object;
     }
 
-    @Override
-    public boolean isEditable( int column )
-    {
-        return column != 0;
-    }
-
     public Object[] getData()
     {
         return getUserObject();
     }
 
-    public int getObjectCount()
+    public void setEditable( int i, boolean isEditable )
     {
-        return treeItemNumber;
+
+        if ( isEditable )
+        {
+            editableColumns.add( i );
+        }
+        else
+        {
+            editableColumns.remove( editableColumns.indexOf( i ) );
+        }
     }
 
-    public String getName()
+    @Override
+    public boolean isEditable( int i )
     {
-        return ( String ) ( ( Object[] ) super.getUserObject() )[ 0 ];
+        return editableColumns.contains( i );
     }
 }

@@ -1,8 +1,12 @@
 package Visitor;
 
+import extraction.AttributeItem;
+import static extraction.AttributeItem.ATTRIBUTE_NAME;
+import static extraction.AttributeItem.PARENT_RELATION_NAME;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -335,16 +339,16 @@ public class XSDBuilder implements Visitor
     public void visit( NonKeyNode visiting_non_key )
     {
         String attribute_name = visiting_non_key.getName();
-        add_xsd_element_element( current_attributes_root, attribute_name, visiting_non_key.getDatatype() );
+        add_xsd_element_element( current_attributes_root, attribute_name, visiting_non_key.getDatatype().toString() );
     }
 
     @Override
     public void visit( Key key )
     {
         String keyName = ( ( PrimaryKeyNode ) key ).getName();
-        add_xsd_attribute_element( ( Element ) current_attributes_root.getParentNode(), keyName, ( ( PrimaryKeyNode ) key ).getDatatype(), "required" );
+        add_xsd_attribute_element( ( Element ) current_attributes_root.getParentNode(), keyName, ( ( PrimaryKeyNode ) key ).getDatatype().toString(), "required" );
 
-        String constraintName = key.getConstraintName();
+        String constraintName = key.getKeyConstraint().toString();
         String parentRelation = key.getParent().getName();
         String xpath = "./" + parentRelation + "_relation/" + parentRelation;
         String constraintName_;
@@ -369,12 +373,12 @@ public class XSDBuilder implements Visitor
     {
         String foreign_key_name;
         String attribute_name = foreignKeyNode.getName();
-        add_xsd_element_element( current_attributes_root, attribute_name, foreignKeyNode.getDatatype() );
+        add_xsd_element_element( current_attributes_root, attribute_name, foreignKeyNode.getDatatype().toString() );
         foreign_key_name = foreignKeyNode.getName();
 
-        String constraint_name = foreignKeyNode.getConstraintName();
-        PrimaryKeyNode referenced_primary_key = ( PrimaryKeyNode ) foreignKeyNode.getReferencedPrimary();
-        String referenced_constraint_name = referenced_primary_key.getConstraintName();
+        String constraint_name = foreignKeyNode.getKeyConstraint().toString();
+        PrimaryKeyNode referenced_primary_key = ( PrimaryKeyNode ) foreignKeyNode.getReferencedKey();
+        String referenced_constraint_name = referenced_primary_key.getKeyConstraint().toString();
         String parent_relation_schema = foreignKeyNode.getParent().getName();
         String xpath = "./" + parent_relation_schema + "_relation/" + parent_relation_schema;
         Element keyref_element = add_xsd_keyref_element( constraints_root, constraint_name, referenced_constraint_name );
@@ -388,27 +392,28 @@ public class XSDBuilder implements Visitor
         String foreign_key_name;
 
         String attribute_name = combinedKeyNode.getName();
-        add_xsd_attribute_element( ( Element ) current_attributes_root.getParentNode(), attribute_name, combinedKeyNode.getDatatype() );
+        add_xsd_attribute_element( ( Element ) current_attributes_root.getParentNode(), attribute_name, combinedKeyNode.getDatatype().toString() );
         foreign_key_name = "@" + combinedKeyNode.getName();
 
-        String constraintName = combinedKeyNode.getConstraintName();
-        PrimaryKeyNode referenced_primary_key = ( PrimaryKeyNode ) combinedKeyNode.getReferencedPrimary();
-        String referenced_constraintName = referenced_primary_key.getConstraintName();
+        String constraintName = combinedKeyNode.getKeyConstraint().toString();
+        PrimaryKeyNode referenced_primary_key = ( PrimaryKeyNode ) combinedKeyNode.getReferencedKey();
+        String referenced_constraintName = referenced_primary_key.getKeyConstraint().toString();
         String parent_relation_schema = combinedKeyNode.getParent().getName();
         String xpath = "./" + parent_relation_schema + "_relation/" + parent_relation_schema;
         Element keyref_element = add_xsd_keyref_element( constraints_root, constraintName, referenced_constraintName );
         add_xsd_selector_element( keyref_element, xpath );
         add_xsd_field_element( keyref_element, foreign_key_name );
 
-        PrimaryKeyNode key = new PrimaryKeyNode( 0, new Object[]
-        {
-            combinedKeyNode.getName(), combinedKeyNode.getName(), "", ""
-        }, combinedKeyNode.getConstraintName(), combinedKeyNode.getValueAt( 3 ).toString() );
+        HashMap<AttributeItem, String> attributeItems = new HashMap<>();
+        attributeItems.put( ATTRIBUTE_NAME, combinedKeyNode.getName() );
+        attributeItems.put( PARENT_RELATION_NAME, combinedKeyNode.getParent().getName() );
+
+        PrimaryKeyNode key = new PrimaryKeyNode( attributeItems, combinedKeyNode.getDatatype() );
         key.setParent( combinedKeyNode.getParent() );
 
         String keyName = key.getName();
 
-        constraintName = key.getConstraintName();
+        constraintName = key.getKeyConstraint().toString();
         String parentRelation = key.getParent().getName();
         xpath = "./" + parentRelation + "_relation/" + parentRelation;
         String constraintName_;

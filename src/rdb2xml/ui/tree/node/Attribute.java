@@ -1,9 +1,13 @@
 package rdb2xml.ui.tree.node;
 
+import extraction.XSDDatatype;
+
 public interface Attribute extends SchemaObject
 {
 
-    public String getDatatype();
+    public RelationNode getParent();
 
-    public void setDatatype( String dataType );
+    public void setDatatype( String datatype );
+
+    public XSDDatatype getDatatype();
 }

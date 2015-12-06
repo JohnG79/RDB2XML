@@ -1,36 +1,100 @@
 package rdb2xml.ui.tree.node;
 
 import Visitor.Visitor;
+import extraction.AttributeItem;
+import static extraction.AttributeItem.ATTRIBUTE_NAME;
+import static extraction.AttributeItem.PARENT_RELATION_NAME;
+import extraction.XSDDatatype;
+import static extraction.XSDDatatype.get;
+import java.util.HashMap;
+import java.util.ArrayList;
+import rdb2xml.ui.tree.node.Foreign;
 
 public class PrimaryKeyNode extends AbstractLeafNode implements Primary
 {
 
-    private final String constraintName;
+    private XSDDatatype xsdDatatype;
+    private KeyConstraint keyConstraint;
+    private final String keyName;
+    private String newTermName;
 
-    public PrimaryKeyNode( int treeItemNumber, Object[] objects, String constaintName, String dataType )
+    public PrimaryKeyNode( HashMap<AttributeItem, String> attributeItems, XSDDatatype xsdDatatype )
     {
-        super( treeItemNumber, objects );
-        super.setValueAt( dataType, 3 );
-        this.userObject = objects;
+        super( null );
+        this.keyName = attributeItems.get( ATTRIBUTE_NAME );
+        this.newTermName = attributeItems.get( ATTRIBUTE_NAME );
+        setConstraint( attributeItems );
         this.allowsChildren = false;
-        this.constraintName = constaintName;
+        this.xsdDatatype = xsdDatatype;
+    }
+
+    public ArrayList<Foreign> getReferencingKeys()
+    {
+        ArrayList<Foreign> referencingKeys = new ArrayList<>();
+
+        Iterable<RelationNode> relationNodes = ( ( SchemaNode ) getParent().getParent() ).getRelations();
+        for ( RelationNode relationNode : relationNodes )
+        {
+            Iterable<Attribute> attributes = relationNode.getAttributes();
+            for ( Attribute attribute : attributes )
+            {
+                if ( attribute instanceof Foreign && ( ( Foreign ) attribute ).getReferencedKey() == this )
+                {
+                    referencingKeys.add( ( Foreign ) attribute );
+                }
+            }
+        }
+
+        return referencingKeys;
     }
 
     @Override
-    public String getConstraintName()
+    public RelationNode getParent()
     {
-        return constraintName;
+        return ( RelationNode ) parent;
+    }
+
+    @Override
+    public void setValueAt( Object o, int column )
+    {
+        switch ( column )
+        {
+            case 1:
+            {
+                newTermName = ( String ) o;
+                break;
+            }
+        }
+    }
+
+    @Override
+    public int getOrderNumber()
+    {
+        RelationNode parent = getParent();
+        return parent.getOrderNumber() + parent.getIndex( this ) + 1;
+    }
+
+    @Override
+    public void setDatatype( String datatype )
+    {
+        xsdDatatype = get( datatype );
+    }
+
+    private void setConstraint( HashMap<AttributeItem, String> attributeItems )
+    {
+        this.keyConstraint = new KeyConstraint( "PK" );
+        this.keyConstraint.setRefRelationName( attributeItems.get( PARENT_RELATION_NAME ) );
+    }
+
+    @Override
+    public KeyConstraint getKeyConstraint()
+    {
+        return keyConstraint;
     }
 
     public void setParent( RelationNode relationNode )
     {
         parent = relationNode;
-    }
-
-    @Override
-    public boolean isEditable( int column )
-    {
-        return column != 0 && column != 2;
     }
 
     @Override
@@ -40,14 +104,31 @@ public class PrimaryKeyNode extends AbstractLeafNode implements Primary
     }
 
     @Override
-    public String getDatatype()
+    public XSDDatatype getDatatype()
     {
-        return ( String ) getValueAt( 3 );
+        return this.xsdDatatype;
     }
 
     @Override
-    public void setDatatype( String dataType )
+    public Object getValueAt( int column )
     {
-        setValueAt( dataType, 3 );
+        switch ( column )
+        {
+            case 0:
+            {
+                return keyName;
+            }
+            case 3:
+            {
+                return xsdDatatype.toString();
+            }
+        }
+        return "";
+    }
+
+    @Override
+    public String getName()
+    {
+        return keyName;
     }
 }

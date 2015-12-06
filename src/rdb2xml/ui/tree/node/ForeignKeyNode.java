@@ -1,33 +1,84 @@
 package rdb2xml.ui.tree.node;
 
 import Visitor.Visitor;
+import extraction.AttributeItem;
+import static extraction.AttributeItem.ATTRIBUTE_NAME;
+import static extraction.AttributeItem.PARENT_RELATION_NAME;
+import static extraction.AttributeItem.REFERENCED_ATTRIBUTE_NAME;
+import static extraction.AttributeItem.REFERENCED_RELATION_NAME;
+import extraction.XSDDatatype;
+import static extraction.XSDDatatype.get;
+import java.util.HashMap;
 
 public class ForeignKeyNode extends AbstractLeafNode implements Foreign
 {
 
-    private final String constraintName;
+    private XSDDatatype xsdDatatype;
+    private KeyConstraint keyConstraint;
     private final Primary referencedPrimary;
+    private final String keyName;
+    private String newTermName;
+    private final String defaultPropertyRange;
 
-    public ForeignKeyNode( int treeItemNumber, Object[] objects, String referencedRelationName, String referencedKeyName, String constraintName, Primary referencedPrimary, String dataType )
+    public ForeignKeyNode( HashMap<AttributeItem, String> attributeItems, Primary referencedPrimary, XSDDatatype xsdDatatype )
     {
-        super( treeItemNumber, objects );
-        super.setValueAt( referencedRelationName.substring( 0, 1 ).toUpperCase() + referencedRelationName.substring( 1 ), 2 );
-        super.setValueAt( dataType, 3 );
-        this.userObject = objects;
+        super( null );
+        this.keyName = attributeItems.get( ATTRIBUTE_NAME );
+        this.newTermName = attributeItems.get( ATTRIBUTE_NAME );
+        this.defaultPropertyRange = attributeItems.get( REFERENCED_RELATION_NAME ).substring( 0, 1 ).toUpperCase() + attributeItems.get( REFERENCED_RELATION_NAME ).substring( 1 );
         this.allowsChildren = false;
-        this.constraintName = constraintName;
+        setConstraint( attributeItems );
         this.referencedPrimary = referencedPrimary;
-
+        this.xsdDatatype = xsdDatatype;
     }
 
     @Override
-    public String getConstraintName()
+    public void setValueAt( Object o, int column )
     {
-        return constraintName;
+        switch ( column )
+        {
+            case 1:
+            {
+                newTermName = ( String ) o;
+                break;
+            }
+        }
     }
 
     @Override
-    public Primary getReferencedPrimary()
+    public int getOrderNumber()
+    {
+        RelationNode parent = getParent();
+        return parent.getOrderNumber() + parent.getIndex( this ) + 1;
+    }
+
+    @Override
+    public RelationNode getParent()
+    {
+        return ( RelationNode ) parent;
+    }
+
+    private void setConstraint( HashMap<AttributeItem, String> attributeItems )
+    {
+        this.keyConstraint = new KeyConstraint( "FK" );
+        this.keyConstraint.setRefRelationName( attributeItems.get( PARENT_RELATION_NAME ) );
+        this.keyConstraint.setRefKeyName( attributeItems.get( ATTRIBUTE_NAME ) );
+    }
+
+    @Override
+    public void setDatatype( String datatype )
+    {
+        xsdDatatype = get( datatype );
+    }
+
+    @Override
+    public KeyConstraint getKeyConstraint()
+    {
+        return keyConstraint;
+    }
+
+    @Override
+    public Primary getReferencedKey()
     {
         return referencedPrimary;
     }
@@ -39,14 +90,35 @@ public class ForeignKeyNode extends AbstractLeafNode implements Foreign
     }
 
     @Override
-    public String getDatatype()
+    public XSDDatatype getDatatype()
     {
-        return ( String ) getValueAt( 3 );
+        return this.xsdDatatype;
     }
 
     @Override
-    public void setDatatype( String dataType )
+    public Object getValueAt( int column )
     {
-        setValueAt( dataType, 3 );
+        switch ( column )
+        {
+            case 0:
+            {
+                return keyName;
+            }
+            case 1:
+            {
+                return newTermName;
+            }
+            case 3:
+            {
+                return xsdDatatype.toString();
+            }
+        }
+        return "";
+    }
+
+    @Override
+    public String getName()
+    {
+        return keyName;
     }
 }

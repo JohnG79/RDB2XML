@@ -1,7 +1,7 @@
 package control;
 
 import Visitor.XSDBuilder;
-import extraction.Database;
+import extraction.SchemaImporter;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -20,22 +20,23 @@ public class Controller
 {
 
     private Connection sqlConnection;
-    private ConnectionDialog connectFrame;
-    private Main mainFrame;
+    private ConnectDialog connectDialog;
+    private MainDialog mainDialog;
     private JXTreeTable treeTable;
     private XSDBuilder xsdBuilder;
 
     public void openConnectionDialog()
     {
-        connectFrame = new ConnectionDialog( this );
-        connectFrame.setLocationRelativeTo( null );
-        connectFrame.setVisible( true );
-        mainFrame.setEnabled( false );
+        connectDialog = new ConnectDialog( this );
+        connectDialog.setLocationRelativeTo( null );
+        connectDialog.setVisible( true );
+        mainDialog.setEnabled( false );
+
     }
 
-    public void setMainFrame( Main mainFrame )
+    public void setMainFrame( MainDialog mainFrame )
     {
-        this.mainFrame = mainFrame;
+        this.mainDialog = mainFrame;
     }
 
     public void connect( HashMap< ConnectionParameter, String> connectionParams, DataFormat dataFormat )
@@ -43,7 +44,8 @@ public class Controller
         sqlConnection = new MySQLConnection();
         sqlConnection.connect( connectionParams );
         importSchema( dataFormat );
-        mainFrame.setEnabled( true );
+        mainDialog.setEnabled( true );
+        mainDialog.showSchemaTab( true );
     }
 
     public void save( File file )
@@ -53,8 +55,8 @@ public class Controller
 
     public void enableMainForm()
     {
-        mainFrame.setEnabled( true );
-        mainFrame.setVisible( true );
+        mainDialog.setEnabled( true );
+        mainDialog.setVisible( true );
     }
 
     public void save( RSyntaxTextArea rSyntaxTextArea, File file )
@@ -64,25 +66,19 @@ public class Controller
             BufferedWriter outFile;
             outFile = new BufferedWriter( new FileWriter( file ) );
             rSyntaxTextArea.write( outFile );
-            try
-            {
-                outFile.close();
-            }
-            catch ( IOException e )
-            {
-            }
+            outFile.close();
         }
         catch ( IOException ex )
         {
         }
     }
 
-    private void importSchema( DataFormat dataFormat )
+    private void importSchema( DataFormat newFormat )
     {
         if ( sqlConnection.isConnected() )
         {
-            Database database = new Database( sqlConnection );
-            mainFrame.setSchema( treeTable = database.importSchema( dataFormat ) );
+            SchemaImporter database = new SchemaImporter( sqlConnection );
+            mainDialog.setSchema( treeTable = database.importSchema( newFormat ) );
         }
     }
 

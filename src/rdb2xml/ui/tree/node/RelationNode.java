@@ -12,21 +12,37 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 public class RelationNode extends AbstractNonLeafNode implements SchemaObject
 {
 
-    private final ArrayList<Integer> editableColumns;
-    private final List<Attribute> children;
+    private String relationName;
+    private String conceptName;
+    private final List<Attribute> attributeNodes;
 
-    public RelationNode( int treeItemNumber, Object[] objects )
+    public RelationNode( String relationName, String conceptName )
     {
-        super( treeItemNumber, objects );
-        this.userObject = objects;
+        super( null );
+        this.relationName = relationName;
+        this.conceptName = conceptName;
         this.allowsChildren = true;
-        children = new ArrayList<>();
-        editableColumns = new ArrayList<>();
+        attributeNodes = new ArrayList<>();
+    }
+
+    @Override
+    public int getOrderNumber()
+    {
+        int tally = 0;
+        SchemaNode parent = ( SchemaNode ) getParent();
+        tally += parent.getOrderNumber();
+        List<RelationNode> relationNodes = parent.getRelations();
+        for ( int i = 0; i < parent.getIndex( this ); i++ )
+        {
+            tally += 1;
+            tally += ( ( RelationNode ) relationNodes.get( i ) ).getChildCount();
+        }
+        return tally;
     }
 
     public List<Attribute> getAttributes()
     {
-        return children;
+        return attributeNodes;
     }
 
     @Override
@@ -37,13 +53,13 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
             throw new IllegalStateException( "this node cannot accept children" );
         }
 
-        if ( children.contains( child ) )
+        if ( attributeNodes.contains( ( Attribute ) child ) )
         {
-            children.remove( child );
+            attributeNodes.remove( ( Attribute ) child );
             index--;
         }
 
-        children.add( index, ( Attribute ) child );
+        attributeNodes.add( index, ( Attribute ) child );
 
         if ( child.getParent() != this )
         {
@@ -54,56 +70,45 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
     @Override
     public void remove( int index )
     {
-        MutableTreeTableNode a = ( MutableTreeTableNode ) children.remove( index );
+        MutableTreeTableNode a = ( MutableTreeTableNode ) attributeNodes.remove( index );
         a.setParent( null );
-    }
-
-    public void setEditable( int i )
-    {
-        editableColumns.add( i );
-    }
-
-    @Override
-    public boolean isEditable( int i )
-    {
-        return editableColumns.contains( i );
     }
 
     @Override
     public void remove( MutableTreeTableNode node )
     {
-        children.remove( ( RelationNode ) node );
+        attributeNodes.remove( ( Attribute ) node );
         node.setParent( null );
     }
 
     @Override
     public TreeTableNode getChildAt( int childIndex )
     {
-        return ( TreeTableNode ) children.get( childIndex );
+        return ( TreeTableNode ) attributeNodes.get( childIndex );
     }
 
     @Override
     public int getIndex( TreeNode node )
     {
-        return children.indexOf( node );
+        return attributeNodes.indexOf( node );
     }
 
     @Override
     public Enumeration<? extends MutableTreeTableNode> children()
     {
-        ArrayList<MutableTreeTableNode> children = new ArrayList<>();
-        for ( Attribute attribute : this.children )
+        ArrayList<MutableTreeTableNode> attributeNodesTemp = new ArrayList<>();
+        for ( Attribute attribute : this.attributeNodes )
         {
-            children.add( ( AbstractMutableTreeTableNode ) attribute );
+            attributeNodesTemp.add( ( AbstractMutableTreeTableNode ) attribute );
         }
 
-        return enumeration( children );
+        return enumeration( attributeNodesTemp );
     }
 
     @Override
     public int getChildCount()
     {
-        return children.size();
+        return attributeNodes.size();
     }
 
     @Override
@@ -112,8 +117,40 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
         visitor.visit( this );
     }
 
-    public void setUneditable( int i )
+    @Override
+    public void setValueAt( Object value, int column )
     {
-        editableColumns.remove( editableColumns.indexOf( i ) );
+        switch ( column )
+        {
+            case 1:
+            {
+                conceptName = ( String ) value;
+                break;
+            }
+        }
     }
+
+    @Override
+    public Object getValueAt( int column )
+    {
+        switch ( column )
+        {
+            case 0:
+            {
+                return relationName;
+            }
+            case 1:
+            {
+                return conceptName;
+            }
+        }
+        return "";
+    }
+
+    @Override
+    public String getName()
+    {
+        return relationName;
+    }
+
 }

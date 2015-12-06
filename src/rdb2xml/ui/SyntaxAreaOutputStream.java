@@ -2,6 +2,7 @@ package rdb2xml.ui;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import static java.lang.String.valueOf;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 public class SyntaxAreaOutputStream extends OutputStream
@@ -24,7 +25,7 @@ public class SyntaxAreaOutputStream extends OutputStream
     public void write( int b ) throws IOException
     {
         // redirects data to the text area
-        textArea.append( String.valueOf( ( char ) b ) );
+        textArea.append( valueOf( ( char ) b ) );
         // scrolls the text area to the end of data
         textArea.setCaretPosition( textArea.getDocument().getLength() );
     }

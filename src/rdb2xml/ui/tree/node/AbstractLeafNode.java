@@ -10,87 +10,78 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 public abstract class AbstractLeafNode extends AbstractNode
 {
 
-    public AbstractLeafNode( int treeItemNumber, Object[] objects )
+    public AbstractLeafNode( Object[] objects )
     {
-        super( treeItemNumber, objects );
+        super( objects );
+        setEditable( 1, true );
     }
 
     @Override
-    public void add( MutableTreeTableNode mttn )
+    public final void add( MutableTreeTableNode mttn )
     {
     }
 
     @Override
-    public Enumeration<? extends MutableTreeTableNode> children()
-    {
-        throw new UnsupportedOperationException( "Leaf nodes do not have children." );
-    }
-
-    @Override
-    protected List<MutableTreeTableNode> createChildrenList()
+    protected final List<MutableTreeTableNode> createChildrenList()
     {
         return new ArrayList<>();
     }
 
     @Override
-    public TreeTableNode getChildAt( int index )
+    public final Enumeration<? extends MutableTreeTableNode> children()
     {
         throw new UnsupportedOperationException( "Leaf nodes do not have children." );
     }
 
     @Override
-    public int getChildCount()
+    public final TreeTableNode getChildAt( int index )
+    {
+        throw new UnsupportedOperationException( "Leaf nodes do not have children." );
+    }
+
+    @Override
+    public final int getChildCount()
     {
         return 0;
     }
 
     @Override
-    public int getIndex( TreeNode node )
+    public final int getIndex( TreeNode node )
     {
         throw new UnsupportedOperationException( "Leaf nodes do not have children." );
     }
 
     @Override
-    public void insert( MutableTreeTableNode child, int index )
-    {
-    }
-
-    @Override
-    public boolean isLeaf()
+    public final boolean isLeaf()
     {
         return true;
     }
 
     @Override
-    public void remove( int index )
+    public final void remove( int index )
     {
     }
 
     @Override
-    public void remove( MutableTreeTableNode node )
+    public final void remove( MutableTreeTableNode node )
     {
     }
 
     @Override
-    public void setAllowsChildren( boolean allowsChildren )
+    public final void setAllowsChildren( boolean allowsChildren )
     {
     }
 
     @Override
-    public boolean getAllowsChildren()
+    public final boolean getAllowsChildren()
     {
         return false;
     }
 
-    public int getTreeItemNumber()
-    {
-        return treeItemNumber;
-    }
-
     @Override
-    public RelationNode getParent()
+    public final void insert( MutableTreeTableNode child, int index )
     {
-        return ( RelationNode ) parent;
+
     }
 
 }

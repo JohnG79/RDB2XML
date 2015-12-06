@@ -39,45 +39,16 @@ public abstract class AbstractMutableTreeTableNode implements MutableTreeTableNo
         return new ArrayList<>();
     }
 
-    public void add( MutableTreeTableNode child )
-    {
-        insert( child, getChildCount() );
-    }
+    public abstract void add( MutableTreeTableNode child );
 
     @Override
-    public void insert( MutableTreeTableNode child, int index )
-    {
-        if ( !allowsChildren )
-        {
-            throw new IllegalStateException( "this node cannot accept children" );
-        }
-
-        if ( children.contains( child ) )
-        {
-            children.remove( child );
-            index--;
-        }
-
-        children.add( index, child );
-
-        if ( child.getParent() != this )
-        {
-            child.setParent( this );
-        }
-    }
+    public abstract void insert( MutableTreeTableNode child, int index );
 
     @Override
-    public void remove( int index )
-    {
-        children.remove( index ).setParent( null );
-    }
+    public abstract void remove( int index );
 
     @Override
-    public void remove( MutableTreeTableNode node )
-    {
-        children.remove( node );
-        node.setParent( null );
-    }
+    public abstract void remove( MutableTreeTableNode node );
 
     @Override
     public void removeFromParent()
@@ -86,7 +57,7 @@ public abstract class AbstractMutableTreeTableNode implements MutableTreeTableNo
     }
 
     @Override
-    public void setParent( MutableTreeTableNode newParent )
+    public final void setParent( MutableTreeTableNode newParent )
     {
         if ( newParent == null || newParent.getAllowsChildren() )
         {
@@ -134,12 +105,6 @@ public abstract class AbstractMutableTreeTableNode implements MutableTreeTableNo
     }
 
     @Override
-    public TreeTableNode getParent()
-    {
-        return parent;
-    }
-
-    @Override
     public Enumeration<? extends MutableTreeTableNode> children()
     {
         return enumeration( children );
@@ -174,10 +139,7 @@ public abstract class AbstractMutableTreeTableNode implements MutableTreeTableNo
     }
 
     @Override
-    public boolean isEditable( int column )
-    {
-        return false;
-    }
+    public abstract boolean isEditable( int column );
 
     @Override
     public String toString()

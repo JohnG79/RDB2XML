@@ -12,19 +12,20 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 public class SchemaNode extends AbstractNonLeafNode implements SchemaObject
 {
 
-    private final List<RelationNode> children;
+    private final List<RelationNode> relationNodes;
+    private String schemaName;
 
-    public SchemaNode( int treeItemNumber, Object[] objects )
+    public SchemaNode( String schemaName )
     {
-        super( treeItemNumber, objects );
-        this.userObject = objects;
+        super( null );
+        this.schemaName = schemaName;
         this.allowsChildren = true;
-        children = new ArrayList<>();
+        relationNodes = new ArrayList<>();
     }
 
-    public Iterable<RelationNode> getRelations()
+    public List<RelationNode> getRelations()
     {
-        return children;
+        return relationNodes;
     }
 
     @Override
@@ -35,13 +36,13 @@ public class SchemaNode extends AbstractNonLeafNode implements SchemaObject
             throw new IllegalStateException( "this node cannot accept children" );
         }
 
-        if ( children.contains( ( RelationNode ) child ) )
+        if ( relationNodes.contains( ( RelationNode ) child ) )
         {
-            children.remove( ( RelationNode ) child );
+            relationNodes.remove( ( RelationNode ) child );
             index--;
         }
 
-        children.add( index, ( RelationNode ) child );
+        relationNodes.add( index, ( RelationNode ) child );
 
         if ( child.getParent() != this )
         {
@@ -52,54 +53,58 @@ public class SchemaNode extends AbstractNonLeafNode implements SchemaObject
     @Override
     public void remove( int index )
     {
-        children.remove( index ).setParent( null );
+        relationNodes.remove( index ).setParent( null );
     }
 
     @Override
     public void remove( MutableTreeTableNode node )
     {
-        children.remove( ( RelationNode ) node );
+        relationNodes.remove( ( RelationNode ) node );
         node.setParent( null );
     }
 
     @Override
     public TreeTableNode getChildAt( int childIndex )
     {
-        return children.get( childIndex );
+        return relationNodes.get( childIndex );
     }
 
     @Override
     public int getIndex( TreeNode node )
     {
-        return children.indexOf( node );
+        return relationNodes.indexOf( node );
     }
 
     @Override
     public Enumeration<? extends MutableTreeTableNode> children()
     {
-        ArrayList<MutableTreeTableNode> children = new ArrayList<>();
-        for ( RelationNode relation : this.children )
+        ArrayList<MutableTreeTableNode> relationNodesTemp = new ArrayList<>();
+        for ( RelationNode relation : this.relationNodes )
         {
-            children.add( ( AbstractMutableTreeTableNode ) relation );
+            relationNodesTemp.add( ( AbstractMutableTreeTableNode ) relation );
         }
-        return enumeration( children );
+        return enumeration( relationNodesTemp );
     }
 
     @Override
     public int getChildCount()
     {
-        return children.size();
+        return relationNodes.size();
     }
 
     @Override
-    public boolean isEditable( int column )
+    public void setValueAt( Object value, int column )
     {
-        return false;
     }
 
     @Override
-    public void setValueAt( Object aValue, int column )
+    public Object getValueAt( int column )
     {
+        if ( column == 0 )
+        {
+            return schemaName;
+        }
+        return "";
     }
 
     @Override
@@ -107,4 +112,17 @@ public class SchemaNode extends AbstractNonLeafNode implements SchemaObject
     {
         visitor.visit( this );
     }
+
+    @Override
+    public String getName()
+    {
+        return schemaName;
+    }
+
+    @Override
+    public int getOrderNumber()
+    {
+        return 0;
+    }
+
 }

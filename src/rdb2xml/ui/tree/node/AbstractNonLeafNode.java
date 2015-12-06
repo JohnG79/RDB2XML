@@ -8,9 +8,15 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 public abstract class AbstractNonLeafNode extends AbstractNode
 {
 
-    public AbstractNonLeafNode( int treeItemNumber, Object[] objects )
+    public AbstractNonLeafNode( Object[] objects )
     {
-        super( treeItemNumber, objects );
+        super( objects );
+    }
+
+    @Override
+    public TreeTableNode getParent()
+    {
+        return parent;
     }
 
     @Override
@@ -23,11 +29,6 @@ public abstract class AbstractNonLeafNode extends AbstractNode
     public void setUserObject( Object object )
     {
         super.setUserObject( object );
-    }
-
-    public int getTreeItemNumber()
-    {
-        return treeItemNumber;
     }
 
     @Override
@@ -58,11 +59,4 @@ public abstract class AbstractNonLeafNode extends AbstractNode
     {
         insert( child, getChildCount() );
     }
-
-    @Override
-    public TreeTableNode getParent()
-    {
-        return parent;
-    }
-
 }
