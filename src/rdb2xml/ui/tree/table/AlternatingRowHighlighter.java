@@ -8,7 +8,9 @@ import org.jdesktop.swingx.decorator.HighlightPredicate;
 
 class AlternatingRowHighlighter extends ColorHighlighter
 {
+
     private Color color;
+
     public AlternatingRowHighlighter( HighlightPredicate highlightPredicate, Color color )
     {
         super( highlightPredicate );

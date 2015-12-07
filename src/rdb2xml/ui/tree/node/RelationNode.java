@@ -2,9 +2,13 @@ package rdb2xml.ui.tree.node;
 
 import Visitor.Visitor;
 import java.util.ArrayList;
+import java.util.Collections;
 import static java.util.Collections.enumeration;
+import static java.util.Collections.unmodifiableList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import javax.swing.tree.TreeNode;
 import org.jdesktop.swingx.treetable.MutableTreeTableNode;
 import org.jdesktop.swingx.treetable.TreeTableNode;
@@ -12,7 +16,9 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 public class RelationNode extends AbstractNonLeafNode implements SchemaObject
 {
 
-    private String relationName;
+    private ArrayList<Tuple> tuples;
+
+    private final String relationName;
     private String conceptName;
     private final List<Attribute> attributeNodes;
 
@@ -23,26 +29,59 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
         this.conceptName = conceptName;
         this.allowsChildren = true;
         attributeNodes = new ArrayList<>();
+
+        this.tuples = new ArrayList<>();
+    }
+
+    public void addTuple( HashMap<String, String> data )
+    {
+        HashMap<Attribute, String> tupleTemp = new HashMap<>();
+
+        if ( data.size() != attributeNodes.size() )
+        {
+            throw new IllegalArgumentException( "tuple length doesn't match number of attributes in this relation." );
+        }
+        Set<String> attributeNames = data.keySet();
+        for ( String attributeName : attributeNames )
+        {
+            tupleTemp.put( getAttribute( attributeName ), data.get( attributeName ) );
+        }
+        Tuple newTuple = new Tuple( this );
+        newTuple.setData( tupleTemp );
+        this.tuples.add( newTuple );
+    }
+
+    private Attribute getAttribute( String attributeName )
+    {
+        Attribute attributeTemp = null;
+        for ( Attribute attribute : attributeNodes )
+        {
+            if ( attribute.getName().equals( attributeName ) )
+            {
+                attributeTemp = attribute;
+            }
+        }
+        return attributeTemp;
     }
 
     @Override
     public int getOrderNumber()
     {
         int tally = 0;
-        SchemaNode parent = ( SchemaNode ) getParent();
-        tally += parent.getOrderNumber();
-        List<RelationNode> relationNodes = parent.getRelations();
-        for ( int i = 0; i < parent.getIndex( this ); i++ )
+        SchemaNode parentTemp = ( SchemaNode ) getParent();
+        tally += parentTemp.getOrderNumber();
+        List<RelationNode> relationNodes = parentTemp.getRelations();
+        for ( int i = 0; i < parentTemp.getIndex( this ); i++ )
         {
             tally += 1;
-            tally += ( ( RelationNode ) relationNodes.get( i ) ).getChildCount();
+            tally += relationNodes.get( i ).getChildCount();
         }
         return tally;
     }
 
-    public List<Attribute> getAttributes()
+    public final List<Attribute> getAttributes()
     {
-        return attributeNodes;
+        return unmodifiableList( attributeNodes );
     }
 
     @Override
@@ -151,6 +190,16 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
     public String getName()
     {
         return relationName;
+    }
+
+    public void clearData()
+    {
+        tuples = new ArrayList<>();
+    }
+
+    public ArrayList<Tuple> getTuples()
+    {
+        return this.tuples;
     }
 
 }

@@ -56,6 +56,11 @@ public abstract class TreeTable
         this.schemaNode.setColumnCount( columnCount );
     }
 
+    public SchemaNode getSchemaNode()
+    {
+        return schemaNode;
+    }
+
     public RelationNode addRelation( String relationName )
     {
         RelationNode newRelationSchemaNode = new RelationNode( relationName, relationName.substring( 0, 1 ).toUpperCase() + relationName.substring( 1 ) );

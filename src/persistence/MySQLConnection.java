@@ -5,7 +5,9 @@ import static java.lang.System.err;
 import static java.sql.DriverManager.getConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -14,6 +16,7 @@ import static persistence.ConnectionParameter.PASSWORD;
 import static persistence.ConnectionParameter.PORT;
 import static persistence.ConnectionParameter.SCHEMA;
 import static persistence.ConnectionParameter.USERNAME;
+import rdb2xml.ui.tree.node.RelationNode;
 
 public class MySQLConnection implements Connection
 {
@@ -37,7 +40,7 @@ public class MySQLConnection implements Connection
     @Override
     public boolean connect( HashMap< ConnectionParameter, String> connectionParameters )
     {
-        parameters = connectionParameters;
+        this.parameters = connectionParameters;
         String host = connectionParameters.get( HOST );
         String port = connectionParameters.get( PORT );
         String user_name = connectionParameters.get( USERNAME );
@@ -78,7 +81,7 @@ public class MySQLConnection implements Connection
     }
 
     @Override
-    public ResultSet executeQuery( String query, HashMap< Integer, String> parameters )
+    public ResultSet executePreparedStatement( String query, HashMap< Integer, String> parameters )
     {
         try
         {
@@ -133,5 +136,47 @@ public class MySQLConnection implements Connection
             err.println( ex.getMessage() );
         }
         return new ArrayList<>();
+    }
+
+    public ResultSet executeQuery( String query )
+    {
+        try
+        {
+            Statement statement = connection.createStatement();
+            return statement.executeQuery( query );
+
+        }
+        catch ( SQLException ex )
+        {
+            err.println( ex.getMessage() );
+        }
+        return null;
+    }
+
+    @Override
+    public void importResults( RelationNode relationNode, ResultSet resultSet )
+    {
+        ArrayList<String> columnNames = new ArrayList<>();
+        HashMap<String, String> tuple = new HashMap<>();
+        try
+        {
+            ResultSetMetaData rsmd = resultSet.getMetaData();
+            for ( int i = 1; i < rsmd.getColumnCount() + 1; i++ )
+            {
+                columnNames.add( rsmd.getColumnName( i ) );
+            }
+            while ( resultSet.next() )
+            {
+                for ( String columnName : columnNames )
+                {
+                    tuple.put( columnName, resultSet.getString( columnName ) );
+                }
+                relationNode.addTuple( tuple );
+            }
+        }
+        catch ( SQLException ex )
+        {
+            err.println( ex.getMessage() );
+        }
     }
 }

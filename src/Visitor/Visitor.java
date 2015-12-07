@@ -6,6 +6,7 @@ import rdb2xml.ui.tree.node.Key;
 import rdb2xml.ui.tree.node.NonKeyNode;
 import rdb2xml.ui.tree.node.RelationNode;
 import rdb2xml.ui.tree.node.SchemaNode;
+import rdb2xml.ui.tree.node.Tuple;
 
 /**
  *
@@ -13,6 +14,8 @@ import rdb2xml.ui.tree.node.SchemaNode;
  */
 public interface Visitor
 {
+
+    public void visit( Tuple tuple );
 
     /**
      *

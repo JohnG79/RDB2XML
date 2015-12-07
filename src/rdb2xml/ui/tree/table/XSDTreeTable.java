@@ -1,6 +1,7 @@
 package rdb2xml.ui.tree.table;
 
 import java.awt.Color;
+import static java.awt.Color.LIGHT_GRAY;
 import java.util.ArrayList;
 import static java.util.Arrays.asList;
 import javax.swing.DefaultCellEditor;
@@ -101,7 +102,6 @@ public class XSDTreeTable extends TreeTable
                             @Override
                             public void editingStopped( ChangeEvent e )
                             {
-                                System.out.println( ( ( SchemaObject ) node ).getOrderNumber() );
                                 String textAfter = treeTable.getCellEditor( row, column ).getCellEditorValue().toString();
                                 if ( !textBefore.equals( textAfter ) )
                                 {
@@ -130,7 +130,7 @@ public class XSDTreeTable extends TreeTable
             }
         };
 
-        AlternatingRowHighlighter alternatingRowHighlighter1 = new AlternatingRowHighlighter( ODD, new Color( 245,245,245 ) );
+        AlternatingRowHighlighter alternatingRowHighlighter1 = new AlternatingRowHighlighter( ODD, new Color( 245, 245, 245 ) );
         SelectedRowHighlighter selectedRowHighlighter = new SelectedRowHighlighter( IS_SELECTED );
 
         this.treeTable.setHighlighters( alternatingRowHighlighter1, selectedRowHighlighter );
@@ -140,7 +140,7 @@ public class XSDTreeTable extends TreeTable
         this.treeTable.expandAll();
         this.treeTable.setRowHeight( 35 );
         this.treeTable.setTreeCellRenderer( new TreeIconRenderer() );
-        this.treeTable.getTableHeader().setBackground( Color.LIGHT_GRAY );
+        this.treeTable.getTableHeader().setBackground( LIGHT_GRAY );
         return this.treeTable;
     }
 }

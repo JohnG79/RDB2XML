@@ -72,7 +72,7 @@ public class SchemaImporter
         parameters.put( 1, relationName );
         parameters.put( 2, schemaName );
 
-        ArrayList< String> nonKeyNames = connection.getResultList( connection.executeQuery( query, parameters ) );
+        ArrayList< String> nonKeyNames = connection.getResultList( connection.executePreparedStatement( query, parameters ) );
         nonKeyNames.stream().forEach( ( nonKeyName )
                 -> 
                 {
@@ -91,7 +91,7 @@ public class SchemaImporter
         parameters.put( 1, relationName );
         parameters.put( 2, schemaName );
 
-        ArrayList< String> primaryKeyNames = connection.getResultList( connection.executeQuery( query, parameters ) );
+        ArrayList< String> primaryKeyNames = connection.getResultList( connection.executePreparedStatement( query, parameters ) );
 
         primaryKeyNames.stream().forEach( ( String primaryKeyName )
                 -> 
@@ -111,7 +111,7 @@ public class SchemaImporter
         parameters.put( 1, relationName );
         parameters.put( 2, schemaName );
 
-        ArrayList< String> foreign_key_names = connection.getResultList( connection.executeQuery( query, parameters ) );
+        ArrayList< String> foreign_key_names = connection.getResultList( connection.executePreparedStatement( query, parameters ) );
 
         for ( String foreignKeyName : foreign_key_names )
         {
@@ -125,7 +125,7 @@ public class SchemaImporter
 
             try
             {
-                ResultSet resultSet = ( connection.executeQuery( query, parameters ) );
+                ResultSet resultSet = ( connection.executePreparedStatement( query, parameters ) );
                 if ( resultSet.next() )
                 {
                     HashMap<AttributeItem, String> attributeItems = new HashMap<>();
@@ -150,7 +150,7 @@ public class SchemaImporter
         parameters.put( 2, relationName );
         parameters.put( 3, nonKeyName );
 
-        return connection.getFirstResult( connection.executeQuery( query, parameters ) );
+        return connection.getFirstResult( connection.executePreparedStatement( query, parameters ) );
     }
 
     private ArrayList< String> importRelations( String schemaName )
@@ -158,7 +158,7 @@ public class SchemaImporter
         String query = "SELECT DISTINCT table_name FROM information_schema.key_column_usage WHERE table_schema = ?";
         HashMap< Integer, String> parameters = new HashMap<>();
         parameters.put( 1, schemaName );
-        return connection.getResultList( connection.executeQuery( query, parameters ) );
+        return connection.getResultList( connection.executePreparedStatement( query, parameters ) );
     }
 
 }

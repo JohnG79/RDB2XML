@@ -26,6 +26,7 @@ import rdb2xml.ui.tree.node.NonKeyNode;
 import rdb2xml.ui.tree.node.PrimaryKeyNode;
 import rdb2xml.ui.tree.node.RelationNode;
 import rdb2xml.ui.tree.node.SchemaNode;
+import rdb2xml.ui.tree.node.Tuple;
 
 public class XSDBuilder implements Visitor
 {
@@ -63,6 +64,11 @@ public class XSDBuilder implements Visitor
         {
         }
 
+    }
+
+    @Override
+    public void visit( Tuple tuple )
+    {
     }
 
     private Element get_xsd_key_element( Element dom_element, String _constraintName )
