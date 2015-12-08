@@ -10,7 +10,7 @@ Last edit = 09/12/2015.
 - User can edit serialised XML before saving
 
 -
-- extra stuff....
+- EXTRA stuff....
 - ALT+Scroll =  changes font size
 - Scroll = scrolls text
 - color coded text
