@@ -17,9 +17,9 @@ Last edit = 09/12/2015.
 
 -
 - NEXT on the Agenda... (beginning now, and probably in this order)
-- product RDF and OWL
-- Connect to Oracle
-- load XML/XSD
+- program produces RDF and OWL
+- program connects to Oracle DBs
+- program loads XML/XSD (and can consequently be translated into RDF/OWL)
 
 
 Projected finish date: Dec 31 2015.
