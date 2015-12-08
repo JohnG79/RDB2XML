@@ -15,8 +15,10 @@ Last edit = 09/12/2015.
 - color coded text.
 
 
-- NEXT on the Agenda... (beginning now)
+- NEXT on the Agenda... (beginning now, and probably in this order)
 - product RDF and OWL.
+- Connect to Oracle.
+- load XML/XSD.
 
 
-
+Projected finish date: Dec 31 2015.
