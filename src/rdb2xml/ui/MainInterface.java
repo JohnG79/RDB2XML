@@ -50,7 +50,7 @@ public final class MainInterface extends javax.swing.JFrame
         this.controller = controller;
         initComponents();
         showSchemaTab( false );
-        this.setMinimumSize( new Dimension(800, 600) );
+        this.setMinimumSize( new Dimension( 800, 600 ) );
         this.getContentPane().setBackground( darkGray );
         jMenuBar1.setBackground( darkGray );
         jMenuBar1.setForeground( lightGray );
@@ -384,8 +384,8 @@ public final class MainInterface extends javax.swing.JFrame
                     buffer.append( ch );
                 }
 
-                addNewSyntaxTab( file.getName() ).setText( buffer.toString().substring(0, buffer.toString().length() - 1 ) );
-                
+                addNewSyntaxTab( file.getName() ).setText( buffer.toString().substring( 0, buffer.toString().length() - 1 ) );
+
             }
             catch ( IOException ioe )
             {
@@ -547,7 +547,7 @@ public final class MainInterface extends javax.swing.JFrame
 
         gbc.gridx++;
         gbc.weightx = 0;
-        tab.add( new JLabel("   "), gbc );
+        tab.add( new JLabel( "   " ), gbc );
         gbc.gridx++;
         tab.add( tabCloseButton, gbc );
 
