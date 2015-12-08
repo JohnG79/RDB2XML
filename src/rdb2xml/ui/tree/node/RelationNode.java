@@ -2,7 +2,6 @@ package rdb2xml.ui.tree.node;
 
 import Visitor.Visitor;
 import java.util.ArrayList;
-import java.util.Collections;
 import static java.util.Collections.enumeration;
 import static java.util.Collections.unmodifiableList;
 import java.util.Enumeration;
@@ -49,6 +48,11 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
         Tuple newTuple = new Tuple( this );
         newTuple.setData( tupleTemp );
         this.tuples.add( newTuple );
+    }
+
+    public void removeTuples()
+    {
+        this.tuples = new ArrayList<>();
     }
 
     private Attribute getAttribute( String attributeName )

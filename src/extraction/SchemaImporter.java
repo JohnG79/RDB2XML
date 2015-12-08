@@ -20,16 +20,15 @@ import rdb2xml.ui.tree.table.OWLTreeTable;
 import rdb2xml.ui.tree.table.TreeTable;
 import rdb2xml.ui.tree.table.XSDTreeTable;
 
-public class SchemaImporter
+public class SchemaImporter extends Importer
 {
 
     private TreeTable treeTable;
     private String schemaName;
-    private final Connection connection;
 
     public SchemaImporter( Connection connection )
     {
-        this.connection = connection;
+        super( connection );
     }
 
     public JXTreeTable importSchema( DataFormat newFormat )

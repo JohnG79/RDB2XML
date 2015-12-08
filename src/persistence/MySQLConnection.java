@@ -21,7 +21,7 @@ import rdb2xml.ui.tree.node.RelationNode;
 public class MySQLConnection implements Connection
 {
 
-    private java.sql.Connection connection;
+    private static java.sql.Connection connection;
     private HashMap< ConnectionParameter, String> parameters;
 
     public MySQLConnection()

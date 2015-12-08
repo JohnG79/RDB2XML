@@ -17,7 +17,6 @@ public class DataImporter
 
     public void importData( RelationNode relationNode )
     {
-
         String query = "SELECT ";
         List<Attribute> attributes = relationNode.getAttributes();
         for ( Attribute attribute : attributes )

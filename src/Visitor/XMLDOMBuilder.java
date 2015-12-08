@@ -1,27 +1,19 @@
 package Visitor;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
-
-import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import rdb2xml.ui.SyntaxAreaOutputStream;
 import rdb2xml.ui.tree.node.Attribute;
 import rdb2xml.ui.tree.node.CombinedKeyNode;
@@ -32,12 +24,14 @@ import rdb2xml.ui.tree.node.PrimaryKeyNode;
 import rdb2xml.ui.tree.node.RelationNode;
 import rdb2xml.ui.tree.node.SchemaNode;
 import rdb2xml.ui.tree.node.Tuple;
+import static java.util.logging.Logger.getLogger;
+import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
 
 /**
  *
  * @author John
  */
-public class XMLDataBuilder implements Visitor
+public class XMLDOMBuilder implements Visitor
 {
 
     private DOMImplementation implementation = null;
@@ -49,7 +43,7 @@ public class XMLDataBuilder implements Visitor
     private final String targetNamespace_prefix;
     private final String targetNamespace;
 
-    public XMLDataBuilder()
+    public XMLDOMBuilder()
     {
         targetNamespace_prefix = "un";
         targetNamespace = "http://www.example.com/";
@@ -64,7 +58,7 @@ public class XMLDataBuilder implements Visitor
         }
         catch ( ParserConfigurationException ex )
         {
-            getLogger( XMLDataBuilder.class.getName() ).log( SEVERE, null, ex );
+            getLogger( XMLDOMBuilder.class.getName() ).log( SEVERE, null, ex );
         }
     }
 
@@ -72,21 +66,12 @@ public class XMLDataBuilder implements Visitor
     public void visit( SchemaNode schemaNode )
     {
         database_root = append_database_to_document( schemaNode.getName() );
-        for ( RelationNode relation_schema : schemaNode.getRelations() )
-        {
-            relation_schema.acceptVisitor( this );
-        }
     }
 
     @Override
     public void visit( RelationNode relationNode )
     {
         current_relation_root = append_relation_to_database( database_root, relationNode.getName() );
-        for ( Tuple tuple : relationNode.getTuples() )
-        {
-            tuple.acceptVisitor( this );
-        }
-
     }
 
     @Override
@@ -144,10 +129,6 @@ public class XMLDataBuilder implements Visitor
         return variable_element;
     }
 
-    /**
-     *
-     * @param full_file_path
-     */
     public void print( RSyntaxTextArea syntaxTextArea )
     {
         RSyntaxTextArea r = new RSyntaxTextArea();

@@ -28,7 +28,7 @@ import rdb2xml.ui.tree.node.RelationNode;
 import rdb2xml.ui.tree.node.SchemaNode;
 import rdb2xml.ui.tree.node.Tuple;
 
-public class XSDBuilder implements Visitor
+public class XSDDOMBuilder implements Visitor
 {
 
     private DOMImplementation dom_implementation;
@@ -47,7 +47,7 @@ public class XSDBuilder implements Visitor
     private final String prefixed_key_tag_name = "xsd:key";
     private final String prefixed_attribute_tag_name = "xsd:attribute";
 
-    public XSDBuilder()
+    public XSDDOMBuilder()
     {
         targetNamespace_prefix = "un";
         targetNamespace_prefix_declation = "xmlns:un";
@@ -322,10 +322,6 @@ public class XSDBuilder implements Visitor
         constraints_root = add_xsd_element_element( root_element, schemaNode.getName() );
         relation_declarations_root = add_xsd_sequence_element( add_xsd_complexType_element( constraints_root ), "1", "1" );
 
-        for ( RelationNode relation : schemaNode.getRelations() )
-        {
-            relation.acceptVisitor( this );
-        }
     }
 
     @Override
@@ -334,11 +330,6 @@ public class XSDBuilder implements Visitor
         String relation_schema_name = relationNode.getName();
         add_relation_declaration( relation_schema_name );
         build_relation_schema_definition( relation_schema_name );
-        for ( Attribute attribute : relationNode.getAttributes() )
-        {
-            attribute.acceptVisitor( this );
-        }
-
     }
 
     @Override

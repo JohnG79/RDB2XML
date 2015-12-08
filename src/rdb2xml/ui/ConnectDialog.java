@@ -26,6 +26,7 @@ public class ConnectDialog extends javax.swing.JFrame
     {
         this.controller = controller;
         initComponents();
+        setDefaultCloseOperation( ConnectDialog.HIDE_ON_CLOSE );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -183,18 +184,18 @@ public class ConnectDialog extends javax.swing.JFrame
 
     private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectButtonActionPerformed
 
-        HashMap<ConnectionParameter, String> connectionParams = new HashMap<>();
+        HashMap<ConnectionParameter, String> connectionParams = new HashMap<ConnectionParameter, String>();
         connectionParams.put( HOST, host.getText() );
         connectionParams.put( PORT, port.getText() );
         connectionParams.put( SCHEMA, database.getText() );
         connectionParams.put( USERNAME, username.getText() );
         connectionParams.put( PASSWORD, password.getText() );
-        controller.connect( connectionParams, ( xmlRadioButton.isSelected() ? XSD : OWL ) );
-        this.dispose();
+        putConnectionParams( connectionParams );
+
     }//GEN-LAST:event_connectButtonActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        this.dispose();
+        this.setVisible( false );
         controller.enableMainForm();
     }//GEN-LAST:event_cancelActionPerformed
 
@@ -225,5 +226,46 @@ public class ConnectDialog extends javax.swing.JFrame
     private void setIconImage( ImageIcon imageIcon )
     {
         this.setIconImage( imageIcon.getImage() );
+    }
+    private HashMap<ConnectionParameter, String> connectionParams;
+    private boolean available = false;
+
+    public synchronized HashMap<ConnectionParameter, String> getConnectionParams()
+    {
+        while ( available == false )
+        {
+            try
+            {
+                wait();
+            }
+            catch ( InterruptedException e )
+            {
+            }
+        }
+        available = false;
+        notifyAll();
+        return this.connectionParams;
+    }
+
+    private synchronized void putConnectionParams( HashMap<ConnectionParameter, String> connectionParams )
+    {
+        while ( available == true )
+        {
+            try
+            {
+                wait();
+            }
+            catch ( InterruptedException e )
+            {
+            }
+        }
+        this.connectionParams = connectionParams;
+        available = true;
+        notifyAll();
+    }
+
+    public DataFormat getDataFormat()
+    {
+        return ( xmlRadioButton.isSelected() ? XSD : OWL );
     }
 }

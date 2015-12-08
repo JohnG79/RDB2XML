@@ -10,6 +10,10 @@ public enum DataFormat
     XSD( new String[]
     {
         "Schema", "Datatype"
+    } ),
+    XML( new String[]
+    {
+        ""
     } );
 
     private final String[] treeTableHeadings;

@@ -26,7 +26,6 @@ public class SyntaxAreaOutputStream extends OutputStream
     {
         // redirects data to the text area
         textArea.append( valueOf( ( char ) b ) );
-        // scrolls the text area to the end of data
-        textArea.setCaretPosition( textArea.getDocument().getLength() );
+
     }
 }
