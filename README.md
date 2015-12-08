@@ -20,6 +20,7 @@ Last edit = 09/12/2015.
 - program produces RDF and OWL
 - program connects to Oracle DBs
 - program loads XML/XSD (and can consequently be translated into RDF/OWL)
+- program connects to Apache TDB and "inserts" RDF
 
 
-Projected finish date: Dec 31 2015.
+Projected finish date: Jan 31 2015.
