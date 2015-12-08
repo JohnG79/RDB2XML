@@ -1,6 +1,9 @@
 # RDB2XML
 Tool for translating MySQL/Oracle RDB to XML + XSD / RDF + OWL.
 
+Email any questions to john.graham.lod@gmail.com
+
+
 Last edit = 09/12/2015.
 
 - Connects to MySQL DB
