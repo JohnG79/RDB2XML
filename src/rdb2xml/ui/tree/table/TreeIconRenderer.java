@@ -1,6 +1,7 @@
 package rdb2xml.ui.tree.table;
 
 import java.awt.Component;
+import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;

@@ -9,9 +9,5 @@ public class Start
     {
         Controller controller = new Controller();
 
-        MainInterface mainFrame = new MainInterface( controller );
-        controller.setMainFrame( mainFrame );
-        mainFrame.setLocationRelativeTo( null );
-        mainFrame.setVisible( true );
     }
 }

@@ -55,19 +55,20 @@ public abstract class AbstractNode extends AbstractMutableTreeTableNode
     public void setEditable( int i, boolean isEditable )
     {
 
-        if ( isEditable )
-        {
-            editableColumns.add( i );
-        }
-        else
-        {
-            editableColumns.remove( editableColumns.indexOf( i ) );
-        }
+//        if ( isEditable )
+//        {
+//            editableColumns.add( i );
+//        }
+//        else
+//        {
+//            editableColumns.remove( editableColumns.indexOf( i ) );
+//        }
     }
 
     @Override
     public boolean isEditable( int i )
     {
-        return editableColumns.contains( i );
+        return true;
+//        return editableColumns.contains( i );
     }
 }

@@ -1,4 +1,4 @@
-package Visitor;
+package Processor;
 
 import rdb2xml.ui.tree.node.CombinedKeyNode;
 import rdb2xml.ui.tree.node.ForeignKeyNode;
@@ -12,7 +12,7 @@ import rdb2xml.ui.tree.node.Tuple;
  *
  * @author John
  */
-public interface Visitor
+public interface Processor
 {
 
     public void visit( Tuple tuple );

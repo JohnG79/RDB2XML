@@ -1,6 +1,6 @@
 package rdb2xml.ui.tree.node;
 
-import Visitor.Visitor;
+import Processor.Processor;
 import extraction.AttributeItem;
 import static extraction.AttributeItem.ATTRIBUTE_NAME;
 import static extraction.AttributeItem.PARENT_RELATION_NAME;
@@ -84,7 +84,7 @@ public class ForeignKeyNode extends AbstractLeafNode implements Foreign
     }
 
     @Override
-    public void acceptVisitor( Visitor visitor )
+    public void acceptProcessor( Processor visitor )
     {
         visitor.visit( this );
     }

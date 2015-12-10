@@ -1,6 +1,6 @@
 package rdb2xml.ui.tree.node;
 
-import Visitor.Visitor;
+import Processor.Processor;
 import java.util.ArrayList;
 import static java.util.Collections.enumeration;
 import static java.util.Collections.unmodifiableList;
@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.treetable.MutableTreeTableNode;
 import org.jdesktop.swingx.treetable.TreeTableNode;
 
@@ -96,9 +97,9 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
             throw new IllegalStateException( "this node cannot accept children" );
         }
 
-        if ( attributeNodes.contains( ( Attribute ) child ) )
+        if ( attributeNodes.contains( child ) )
         {
-            attributeNodes.remove( ( Attribute ) child );
+            attributeNodes.remove( child );
             index--;
         }
 
@@ -120,8 +121,7 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
     @Override
     public void remove( MutableTreeTableNode node )
     {
-        attributeNodes.remove( ( Attribute ) node );
-        node.setParent( null );
+        attributeNodes.remove( node );
     }
 
     @Override
@@ -142,7 +142,7 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
         ArrayList<MutableTreeTableNode> attributeNodesTemp = new ArrayList<>();
         for ( Attribute attribute : this.attributeNodes )
         {
-            attributeNodesTemp.add( ( AbstractMutableTreeTableNode ) attribute );
+            attributeNodesTemp.add( ( MutableTreeTableNode ) attribute );
         }
 
         return enumeration( attributeNodesTemp );
@@ -155,7 +155,7 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
     }
 
     @Override
-    public void acceptVisitor( Visitor visitor )
+    public void acceptProcessor( Processor visitor )
     {
         visitor.visit( this );
     }

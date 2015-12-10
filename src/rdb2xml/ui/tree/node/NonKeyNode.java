@@ -1,6 +1,6 @@
 package rdb2xml.ui.tree.node;
 
-import Visitor.Visitor;
+import Processor.Processor;
 import extraction.XSDDatatype;
 import static extraction.XSDDatatype.get;
 
@@ -54,7 +54,7 @@ public class NonKeyNode extends AbstractLeafNode implements Attribute
     }
 
     @Override
-    public void acceptVisitor( Visitor visitor )
+    public void acceptProcessor( Processor visitor )
     {
         visitor.visit( this );
     }

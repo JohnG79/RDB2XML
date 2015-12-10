@@ -1,6 +1,6 @@
 package control;
 
-import Visitor.XSDDOMBuilder;
+import Processor.XSDDOMBuilder;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -15,22 +15,24 @@ public class Controller extends Thread
 {
 
     private final ConnectDialog connectDialog;
-    private MainInterface mainDialog;
+    private final MainInterface mainInterface;
     private XSDDOMBuilder xsdDOMBuilder;
 
     public Controller()
     {
         connectDialog = new ConnectDialog( this );
+        mainInterface = new MainInterface( this );
+        mainInterface.setLocationRelativeTo( null );
+        mainInterface.setVisible( true );
     }
 
     public void importSchema()
     {
-        new SchemaImportController( connectDialog, mainDialog ).start();
-    }
-
-    public void setMainFrame( MainInterface mainFrame )
-    {
-        this.mainDialog = mainFrame;
+        SchemaImportThread schemaImportThread = new SchemaImportThread( connectDialog, mainInterface );
+        /**
+         * This thread waits for user to finish with the connection-dialog box.
+         */
+        schemaImportThread.start();
     }
 
     public void save( File file )
@@ -40,8 +42,8 @@ public class Controller extends Thread
 
     public void enableMainForm()
     {
-        mainDialog.setEnabled( true );
-        mainDialog.setVisible( true );
+        mainInterface.setEnabled( true );
+        mainInterface.setVisible( true );
     }
 
     public void save( RSyntaxTextArea rSyntaxTextArea, File file )
@@ -58,25 +60,25 @@ public class Controller extends Thread
         }
     }
 
-    public void serialiseData( RSyntaxTextArea syntaxTextArea )
+    public void importAndSerialiseData( RSyntaxTextArea syntaxTextArea )
     {
-        DataImportController dataImporter = new DataImportController( ( SchemaNode ) ( SchemaImportController.getSchemaTreeTable() ).getTreeTableModel().getRoot(), syntaxTextArea );
-        dataImporter.start();
+        DataController dataController = new DataController( ( SchemaNode ) ( SchemaImportThread.getSchemaTreeTable() ).getTreeTableModel().getRoot(), syntaxTextArea );
+        dataController.start();
     }
 
     public void serialiseSchema( RSyntaxTextArea syntaxTextArea )
     {
         xsdDOMBuilder = new XSDDOMBuilder();
-        SchemaNode schemaNode = ( SchemaNode ) ( SchemaImportController.getSchemaTreeTable() ).getTreeTableModel().getRoot();
-        schemaNode.acceptVisitor( xsdDOMBuilder );
+        SchemaNode schemaNode = ( SchemaNode ) ( SchemaImportThread.getSchemaTreeTable() ).getTreeTableModel().getRoot();
+        schemaNode.acceptProcessor( xsdDOMBuilder );
         for ( RelationNode relation : schemaNode.getRelations() )
         {
-            relation.acceptVisitor( xsdDOMBuilder );
+            relation.acceptProcessor( xsdDOMBuilder );
             for ( Attribute attribute : relation.getAttributes() )
             {
-                attribute.acceptVisitor( xsdDOMBuilder );
+                attribute.acceptProcessor( xsdDOMBuilder );
             }
         }
-        xsdDOMBuilder.print( syntaxTextArea );
+        xsdDOMBuilder.serialise( syntaxTextArea );
     }
 }

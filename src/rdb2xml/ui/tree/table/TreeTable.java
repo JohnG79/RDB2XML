@@ -7,7 +7,6 @@ import static extraction.AttributeItem.REFERENCED_ATTRIBUTE_NAME;
 import static extraction.AttributeItem.REFERENCED_RELATION_NAME;
 import extraction.XSDDatatype;
 import java.awt.*;
-import static java.awt.Font.PLAIN;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.*;
@@ -32,15 +31,33 @@ import rdb2xml.ui.tree.node.SchemaNode;
 public abstract class TreeTable
 {
 
+    public static void setFont( JComponent jComponent )
+    {
+        jComponent.setFont( new Font( "Courier New", Font.BOLD, 16 ) );
+    }
+
+    protected static void setFocusHighlight( JComponent component )
+    {
+        component.addFocusListener( new FocusListener()
+        {
+            @Override
+            public void focusGained( FocusEvent e )
+            {
+                component.setBackground( new Color( 255, 255, 225 ) );
+            }
+
+            @Override
+            public void focusLost( FocusEvent e )
+            {
+                component.setBackground( new Color( 255, 255, 225 ) );
+            }
+        } );
+    }
+
     protected final String[] columnHeadings;
     protected SchemaNode schemaNode;
     protected DefaultTreeTableModel tableModel;
     protected JXTreeTable treeTable;
-
-    private TreeTable()
-    {
-        this.columnHeadings = null;
-    }
 
     public TreeTable( String[] columnHeadings, int columnCount )
     {
@@ -54,6 +71,11 @@ public abstract class TreeTable
         this.columnHeadings = columnHeadings;
         this.schemaNode = new SchemaNode( rootNodeName );
         this.schemaNode.setColumnCount( columnCount );
+    }
+
+    private TreeTable()
+    {
+        this.columnHeadings = null;
     }
 
     public SchemaNode getSchemaNode()
@@ -174,29 +196,6 @@ public abstract class TreeTable
             }
         }
         throw new IllegalStateException( "Referenced primary key doesn't exist!" );
-    }
-
-    protected void setFocusHighlight( JComponent component )
-    {
-        component.addFocusListener( new FocusListener()
-        {
-            @Override
-            public void focusGained( FocusEvent e )
-            {
-                component.setBackground( new Color( 255, 255, 225 ) );
-            }
-
-            @Override
-            public void focusLost( FocusEvent e )
-            {
-                component.setBackground( new Color( 255, 255, 225 ) );
-            }
-        } );
-    }
-
-    protected void setFont( JComponent jComponent )
-    {
-        jComponent.setFont( new Font( "Courier new", PLAIN, 16 ) );
     }
 
     protected void clearCell( Class clas, int column )

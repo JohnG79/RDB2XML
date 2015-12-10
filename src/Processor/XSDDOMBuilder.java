@@ -1,4 +1,4 @@
-package Visitor;
+package Processor;
 
 import extraction.AttributeItem;
 import static extraction.AttributeItem.ATTRIBUTE_NAME;
@@ -28,7 +28,7 @@ import rdb2xml.ui.tree.node.RelationNode;
 import rdb2xml.ui.tree.node.SchemaNode;
 import rdb2xml.ui.tree.node.Tuple;
 
-public class XSDDOMBuilder implements Visitor
+public class XSDDOMBuilder implements Processor
 {
 
     private DOMImplementation dom_implementation;
@@ -266,7 +266,7 @@ public class XSDDOMBuilder implements Visitor
         current_attributes_root = add_xsd_all_element( complexType_element2 );
     }
 
-    public void print( RSyntaxTextArea syntaxTextArea )
+    public void serialise( RSyntaxTextArea syntaxTextArea )
     {
         RSyntaxTextArea r = new RSyntaxTextArea();
 

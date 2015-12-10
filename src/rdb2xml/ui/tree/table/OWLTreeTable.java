@@ -325,7 +325,6 @@ public class OWLTreeTable extends TreeTable
                 return super.getTreeCellRendererComponent( jtree, ( ( AbstractNode ) value ).getValueAt( 0 ).toString(), sel, expanded, leaf, row, hasFocus );
             }
         }
-        this.treeTable.setFont( new Font( "Courier new", PLAIN, 16 ) );
         this.treeTable.setHighlighters( alternatingRowHighlighter, selectedRowHighlighter );
         this.treeTable.setShowGrid( true, true );
         this.treeTable.setColumnControlVisible( true );

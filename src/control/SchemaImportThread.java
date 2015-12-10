@@ -6,13 +6,13 @@ import persistence.DataFormat;
 import rdb2xml.ui.ConnectDialog;
 import rdb2xml.ui.MainInterface;
 
-public class SchemaImportController extends ImportController
+public class SchemaImportThread extends ImportController
 {
 
     private final ConnectDialog connectDialog;
     private final MainInterface mainInterface;
 
-    public SchemaImportController( ConnectDialog connectDialog, MainInterface mainInterface )
+    public SchemaImportThread( ConnectDialog connectDialog, MainInterface mainInterface )
     {
         super();
         this.connectDialog = connectDialog;
@@ -22,14 +22,21 @@ public class SchemaImportController extends ImportController
     @Override
     public void run()
     {
-        connectDialog.setLocationRelativeTo( mainInterface );
-        connectDialog.setVisible( true );
+        //show connection-dialog box
+        this.connectDialog.setLocationRelativeTo( mainInterface );
+        this.connectDialog.setVisible( true );
+
         DataFormat dataFormat = this.connectDialog.getDataFormat();
+
+        /**
+         * getConnectionParams() is synchronized; this thread wait()s for user
+         * to finish with the connectionDialog.
+         */
         if ( sqlConnection.connect( this.connectDialog.getConnectionParams() ) )
         {
             importSchema( dataFormat );
-            mainInterface.setSchema( importSchema( dataFormat ) );
-            mainInterface.showSchemaTab( true );
+            mainInterface.setTreeTable( importSchema( dataFormat ) );
+            mainInterface.showTreeTableTab( true );
         }
         connectDialog.setVisible( false );
         super.sqlConnection = sqlConnection;
@@ -50,6 +57,10 @@ public class SchemaImportController extends ImportController
 
     public static JXTreeTable getSchemaTreeTable()
     {
+        if ( jXTreeTable == null )
+        {
+            throw new IllegalStateException( "Schema must be imported before the data is imported." );
+        }
         return jXTreeTable;
     }
 }

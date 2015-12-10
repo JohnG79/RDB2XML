@@ -2,6 +2,7 @@ package rdb2xml.ui.tree.table;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;

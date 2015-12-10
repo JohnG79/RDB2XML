@@ -2,6 +2,20 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/node/AbstractNode.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/node/AbstractLeafNode.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/node/SchemaNode.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/node/AbstractNonLeafNode.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/table/XSDTreeTable.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/table/TreeTable.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/table/TreeIconRenderer.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/node/RelationNode.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/control/Controller.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/control/SchemaImportThread.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/extraction/SchemaImporter.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/MainInterface.java</file>
+            <file>file:/C:/Users/johng/Documents/NetBeansProjects/RDB2XML/src/rdb2xml/ui/tree/table/AlternatingRowHighlighter.java</file>
+        </group>
     </open-files>
 </project-private>

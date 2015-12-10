@@ -1,6 +1,6 @@
 package rdb2xml.ui.tree.node;
 
-import Visitor.Visitor;
+import Processor.Processor;
 import java.util.ArrayList;
 import static java.util.Collections.enumeration;
 import java.util.Enumeration;
@@ -108,7 +108,7 @@ public class SchemaNode extends AbstractNonLeafNode implements SchemaObject
     }
 
     @Override
-    public void acceptVisitor( Visitor visitor )
+    public void acceptProcessor( Processor visitor )
     {
         visitor.visit( this );
     }

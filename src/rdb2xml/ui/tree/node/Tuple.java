@@ -1,6 +1,6 @@
 package rdb2xml.ui.tree.node;
 
-import Visitor.Visitor;
+import Processor.Processor;
 import java.util.HashMap;
 
 public class Tuple
@@ -29,7 +29,7 @@ public class Tuple
         return this.data;
     }
 
-    public void acceptVisitor( Visitor visitor )
+    public void acceptProcessor( Processor visitor )
     {
         visitor.visit( this );
     }

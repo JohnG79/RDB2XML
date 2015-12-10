@@ -1,4 +1,4 @@
-package Visitor;
+package Processor;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,12 +26,14 @@ import rdb2xml.ui.tree.node.SchemaNode;
 import rdb2xml.ui.tree.node.Tuple;
 import static java.util.logging.Logger.getLogger;
 import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
+import static java.util.logging.Logger.getLogger;
+import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
 
 /**
  *
  * @author John
  */
-public class XMLDOMBuilder implements Visitor
+public class XMLDOMBuilder implements Processor
 {
 
     private DOMImplementation implementation = null;
@@ -129,7 +131,7 @@ public class XMLDOMBuilder implements Visitor
         return variable_element;
     }
 
-    public void print( RSyntaxTextArea syntaxTextArea )
+    public void serialise( RSyntaxTextArea syntaxTextArea )
     {
         RSyntaxTextArea r = new RSyntaxTextArea();
 
