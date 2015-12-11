@@ -27,3 +27,6 @@ Last edit = 09/12/2015.
 
 
 Projected finish date: Jan 31 2015.
+
+
+Development on hold for 1 week (until 17.12.2015) for OWL research purposes.
