@@ -33,4 +33,4 @@ Development has been on hold since November 2015 for research purposes
 ( OWL, DL, conversion from RDB to ontologies, ... )
 
 
-Keywords: OWL OWL2 Ontology Ontologies R2RML Mapping Map Relational Database Schema DL Description Logics KB Knowledge Base
+Keywords: RDF Resource Description Framework XML XSD OWL OWL2 Ontology Ontologies R2RML Mapping Map Relational Database Schema DL Description Logics KB Knowledge Base Tim Berners-Lee W3C
