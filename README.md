@@ -29,7 +29,7 @@ Last edit = 15/02/2016.
 Projected finish date of complete prototype: Feb 29 2016.
 
 
-Development has been on hold since November 2015 for research purposes (OWL, DL, conversion from RDB to ontologies, ...).
+Development has been on hold since November 2015 for research purposes (OWL, DL, conversion from RDB to ontologies, ...
 
 
 Keywords: OWL OWL2 Ontology Ontologies R2RML Mapping Map Relational Database Schema
