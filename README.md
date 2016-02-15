@@ -1,5 +1,5 @@
 # RDB2XML
-Tool for translating MySQL/Oracle RDB [ data + schema ] to [ XML + XSD ] or [ RDF + OWL ]
+Tool for translating MySQL/Oracle Relational [ data + schema ] to [ XML + XSD ] or [ RDF + OWL ]
 
 Email any questions to john.graham.lod@gmail.com
 
