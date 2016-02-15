@@ -24,7 +24,7 @@ Last edit = 15/02/2016.
 - program connects to Oracle DBs
 - program loads XML/XSD (and can consequently be translated into RDF/OWL)
 - program connects to Apache TDB and "inserts" RDF
-- CODE will be merged from JohnG79/RDB2OWL repo.
+- CODE will be merged from https://github.com/JohnG79/RDB2OWL.git repo.
 
 Projected finish date of complete prototype: Feb 29 2016.
 
