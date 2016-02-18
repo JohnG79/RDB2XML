@@ -1,10 +1,10 @@
 # RDB2XML
-Tool for translating MySQL/Oracle RDB to XML + XSD / RDF + OWL.
+Tool for translating MySQL/Oracle Relational [ data + schema ] to [ XML + XSD ] or [ RDF + OWL ]
 
 Email any questions to john.graham.lod@gmail.com
 
 
-Last edit = 09/12/2015.
+Last edit = 15/02/2016.
 
 - Connects to MySQL DB
 - Produces XML Schema (XSD)
@@ -24,9 +24,14 @@ Last edit = 09/12/2015.
 - program connects to Oracle DBs
 - program loads XML/XSD (and can consequently be translated into RDF/OWL)
 - program connects to Apache TDB and "inserts" RDF
+- CODE will be merged from https://github.com/JohnG79/RDB2OWL.git repo.
+
+Projected finish date of complete prototype: Feb 29 2016.
 
 
-Projected finish date: Jan 31 2015.
+Development has been on hold since November 2015 for research purposes
+
+( OWL, DL, conversion from RDB to ontologies, ... )
 
 
-Development on hold for 1 week (until 17.12.2015) for OWL research purposes.
+Keywords: RDF Resource Description Framework XML XSD OWL OWL2 Ontology Ontologies R2RML Mapping Map Relational Database Schema DL Description Logics KB Knowledge Base Tim Berners-Lee W3C
