@@ -31,8 +31,7 @@ public class ConnectDialog extends javax.swing.JFrame
 
     @SuppressWarnings( "unchecked" )
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         formatButtonGroup = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
@@ -77,34 +76,27 @@ public class ConnectDialog extends javax.swing.JFrame
         password.setText("root");
 
         cancel.setText("Cancel");
-        cancel.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelActionPerformed(evt);
             }
         });
 
         connectButton.setText("Connect");
-        connectButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        connectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 connectButtonActionPerformed(evt);
             }
         });
 
         formatButtonGroup.add(rdfRadioButton);
         rdfRadioButton.setText("RDF");
-        rdfRadioButton.setEnabled(false);
 
         formatButtonGroup.add(xmlRadioButton);
         xmlRadioButton.setSelected(true);
         xmlRadioButton.setText("XML");
-        xmlRadioButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        xmlRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 xmlRadioButtonActionPerformed(evt);
             }
         });

@@ -4,7 +4,6 @@ import Processor.Processor;
 import extraction.AttributeItem;
 import static extraction.AttributeItem.ATTRIBUTE_NAME;
 import static extraction.AttributeItem.PARENT_RELATION_NAME;
-import static extraction.AttributeItem.REFERENCED_ATTRIBUTE_NAME;
 import static extraction.AttributeItem.REFERENCED_RELATION_NAME;
 import extraction.XSDDatatype;
 import static extraction.XSDDatatype.get;
@@ -18,14 +17,14 @@ public class CombinedKeyNode extends AbstractLeafNode implements Primary, Foreig
     private XSDDatatype xsdDatatype;
     private final String keyName;
     private String newTermName;
-    private final String defaultPropertyRange;
+    private final String propertyRange;
 
     public CombinedKeyNode( HashMap<AttributeItem, String> attributeItems, Primary referencedPrimary, XSDDatatype xsdDatatype )
     {
         super( null );
         this.keyName = attributeItems.get( ATTRIBUTE_NAME );
         this.newTermName = attributeItems.get( ATTRIBUTE_NAME );
-        this.defaultPropertyRange = attributeItems.get( REFERENCED_RELATION_NAME ).substring( 0, 1 ).toUpperCase() + attributeItems.get( REFERENCED_RELATION_NAME ).substring( 1 );
+        this.propertyRange = attributeItems.get( REFERENCED_RELATION_NAME ).substring( 0, 1 ).toUpperCase() + attributeItems.get( REFERENCED_RELATION_NAME ).substring( 1 );
         this.allowsChildren = false;
         setConstraint( attributeItems );
         this.referencedPrimary = referencedPrimary;
@@ -82,7 +81,12 @@ public class CombinedKeyNode extends AbstractLeafNode implements Primary, Foreig
     {
         return referencedPrimary;
     }
-
+    
+    public String getPropertyRange()
+    {
+        return propertyRange;
+    }
+    
     @Override
     public void acceptProcessor( Processor visitor )
     {

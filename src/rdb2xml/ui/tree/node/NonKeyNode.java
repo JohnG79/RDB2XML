@@ -8,17 +8,16 @@ public class NonKeyNode extends AbstractLeafNode implements Attribute
 {
 
     private XSDDatatype xsdDatatype;
-    private String nonKeyName;
-    private String newTermName;
+    private final String nonKeyName;
+    private String termName;
 
     public NonKeyNode( String nonKeyName, XSDDatatype xsdDatatype )
     {
         super( null );
         this.nonKeyName = nonKeyName;
-        this.newTermName = nonKeyName;
+        this.termName = nonKeyName;
         this.allowsChildren = false;
         this.xsdDatatype = xsdDatatype;
-
     }
 
     @Override
@@ -28,12 +27,17 @@ public class NonKeyNode extends AbstractLeafNode implements Attribute
         {
             case 1:
             {
-                newTermName = ( String ) o;
+                termName = ( String ) o;
                 break;
             }
         }
     }
-
+    
+    public String getTermName()
+    {
+        return termName;
+    }
+    
     @Override
     public int getOrderNumber()
     {
@@ -76,7 +80,7 @@ public class NonKeyNode extends AbstractLeafNode implements Attribute
             }
             case 1:
             {
-                return newTermName;
+                return termName;
             }
             case 3:
             {

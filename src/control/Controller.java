@@ -1,5 +1,6 @@
 package control;
 
+import Processor.OWLOntBuilder;
 import Processor.XSDDOMBuilder;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -80,5 +81,26 @@ public class Controller extends Thread
             }
         }
         xsdDOMBuilder.serialise( syntaxTextArea );
+    }
+    public void serialiseOntology(  RSyntaxTextArea syntaxTextArea )
+    {
+        OWLOntBuilder owlOntBuilder = new OWLOntBuilder();
+        SchemaNode schemaNode = ( SchemaNode ) ( SchemaImportThread.getSchemaTreeTable() ).getTreeTableModel().getRoot();
+        
+        for ( RelationNode relation : schemaNode.getRelations() )
+        {
+            for ( Attribute attribute : relation.getAttributes() )
+            {
+                attribute.acceptProcessor( owlOntBuilder );
+            }
+        }
+        try
+        {
+            owlOntBuilder.serialiseModel( syntaxTextArea );
+        }
+        catch( Exception e )
+        {
+            
+        }
     }
 }

@@ -4,7 +4,6 @@ import Processor.Processor;
 import extraction.AttributeItem;
 import static extraction.AttributeItem.ATTRIBUTE_NAME;
 import static extraction.AttributeItem.PARENT_RELATION_NAME;
-import static extraction.AttributeItem.REFERENCED_ATTRIBUTE_NAME;
 import static extraction.AttributeItem.REFERENCED_RELATION_NAME;
 import extraction.XSDDatatype;
 import static extraction.XSDDatatype.get;
@@ -17,15 +16,15 @@ public class ForeignKeyNode extends AbstractLeafNode implements Foreign
     private KeyConstraint keyConstraint;
     private final Primary referencedPrimary;
     private final String keyName;
-    private String newTermName;
-    private final String defaultPropertyRange;
+    private String termName;
+    private final String propertyRange;
 
     public ForeignKeyNode( HashMap<AttributeItem, String> attributeItems, Primary referencedPrimary, XSDDatatype xsdDatatype )
     {
         super( null );
         this.keyName = attributeItems.get( ATTRIBUTE_NAME );
-        this.newTermName = attributeItems.get( ATTRIBUTE_NAME );
-        this.defaultPropertyRange = attributeItems.get( REFERENCED_RELATION_NAME ).substring( 0, 1 ).toUpperCase() + attributeItems.get( REFERENCED_RELATION_NAME ).substring( 1 );
+        this.termName = attributeItems.get( ATTRIBUTE_NAME );
+        this.propertyRange = attributeItems.get( REFERENCED_RELATION_NAME ).substring( 0, 1 ).toUpperCase() + attributeItems.get( REFERENCED_RELATION_NAME ).substring( 1 );
         this.allowsChildren = false;
         setConstraint( attributeItems );
         this.referencedPrimary = referencedPrimary;
@@ -39,7 +38,7 @@ public class ForeignKeyNode extends AbstractLeafNode implements Foreign
         {
             case 1:
             {
-                newTermName = ( String ) o;
+                termName = ( String ) o;
                 break;
             }
         }
@@ -82,7 +81,17 @@ public class ForeignKeyNode extends AbstractLeafNode implements Foreign
     {
         return referencedPrimary;
     }
-
+    
+    public String getPropertyRange()
+    {
+        return propertyRange;
+    }
+        
+    public String getTermName()
+    {
+        return termName;
+    }
+    
     @Override
     public void acceptProcessor( Processor visitor )
     {
@@ -106,7 +115,7 @@ public class ForeignKeyNode extends AbstractLeafNode implements Foreign
             }
             case 1:
             {
-                return newTermName;
+                return termName;
             }
             case 3:
             {

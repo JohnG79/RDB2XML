@@ -26,14 +26,13 @@ public class SchemaImportThread extends ImportController
         this.connectDialog.setLocationRelativeTo( mainInterface );
         this.connectDialog.setVisible( true );
 
-        DataFormat dataFormat = this.connectDialog.getDataFormat();
-
         /**
          * getConnectionParams() is synchronized; this thread wait()s for user
          * to finish with the connectionDialog.
          */
         if ( sqlConnection.connect( this.connectDialog.getConnectionParams() ) )
         {
+            DataFormat dataFormat = this.connectDialog.getDataFormat();
             importSchema( dataFormat );
             mainInterface.setTreeTable( importSchema( dataFormat ) );
             mainInterface.showTreeTableTab( true );

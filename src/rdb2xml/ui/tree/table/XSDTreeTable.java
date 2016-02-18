@@ -3,9 +3,6 @@ package rdb2xml.ui.tree.table;
 import java.awt.Color;
 import static java.awt.Color.LIGHT_GRAY;
 import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -18,8 +15,6 @@ import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import javax.swing.table.TableCellEditor;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -46,12 +41,10 @@ public class XSDTreeTable extends TreeTable
         super( treeTableHeadings, 2 );
         font = new Font( "Courier New", Font.BOLD, 16 );
         hl = new FontHighlighter( font );
-
     }
 
     public XSDTreeTable( String[] treeTableHeadings, String rootNodeName )
     {
-
         super( treeTableHeadings, rootNodeName, 2 );
         font = new Font( "Courier New", Font.BOLD, 16 );
         hl = new FontHighlighter( font );
@@ -59,7 +52,6 @@ public class XSDTreeTable extends TreeTable
 
     private XSDTreeTable()
     {
-
         super( null, 2 );
         font = new Font( "Courier New", Font.BOLD, 16 );
         hl = new FontHighlighter( font );
@@ -68,7 +60,6 @@ public class XSDTreeTable extends TreeTable
     @Override
     public JXTreeTable getTreeTable( JTextField textField, JComboBox relationsComboBox, JComboBox datatypesComboBox )
     {
-
         TreeTable.setFont( relationsComboBox );
         TreeTable.setFont( datatypesComboBox );
         TreeTable.setFont( textField );

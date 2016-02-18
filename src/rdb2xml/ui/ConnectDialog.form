@@ -186,7 +186,6 @@
           <ComponentRef name="formatButtonGroup"/>
         </Property>
         <Property name="text" type="java.lang.String" value="RDF"/>
-        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JRadioButton" name="xmlRadioButton">

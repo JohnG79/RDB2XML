@@ -8,7 +8,6 @@ import extraction.XSDDatatype;
 import static extraction.XSDDatatype.get;
 import java.util.HashMap;
 import java.util.ArrayList;
-import rdb2xml.ui.tree.node.Foreign;
 
 public class PrimaryKeyNode extends AbstractLeafNode implements Primary
 {
@@ -16,13 +15,13 @@ public class PrimaryKeyNode extends AbstractLeafNode implements Primary
     private XSDDatatype xsdDatatype;
     private KeyConstraint keyConstraint;
     private final String keyName;
-    private String newTermName;
+    private String termName;
 
     public PrimaryKeyNode( HashMap<AttributeItem, String> attributeItems, XSDDatatype xsdDatatype )
     {
         super( null );
         this.keyName = attributeItems.get( ATTRIBUTE_NAME );
-        this.newTermName = attributeItems.get( ATTRIBUTE_NAME );
+        this.termName = attributeItems.get( ATTRIBUTE_NAME );
         setConstraint( attributeItems );
         this.allowsChildren = false;
         this.xsdDatatype = xsdDatatype;
@@ -61,7 +60,7 @@ public class PrimaryKeyNode extends AbstractLeafNode implements Primary
         {
             case 1:
             {
-                newTermName = ( String ) o;
+                termName = ( String ) o;
                 break;
             }
         }
@@ -109,6 +108,11 @@ public class PrimaryKeyNode extends AbstractLeafNode implements Primary
         return this.xsdDatatype;
     }
 
+    public String getTermName()
+    {
+        return termName;
+    }
+
     @Override
     public Object getValueAt( int column )
     {
@@ -117,6 +121,10 @@ public class PrimaryKeyNode extends AbstractLeafNode implements Primary
             case 0:
             {
                 return keyName;
+            }
+            case 1:
+            {
+                return termName;
             }
             case 3:
             {
