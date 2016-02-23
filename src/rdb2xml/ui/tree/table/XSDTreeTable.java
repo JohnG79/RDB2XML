@@ -96,6 +96,8 @@ public class XSDTreeTable extends TreeTable
                 }
             }
 
+                        
+            
             @Override
             public TableCellEditor getCellEditor( int row, int column )
             {

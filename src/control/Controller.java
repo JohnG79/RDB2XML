@@ -1,6 +1,7 @@
 package control;
 
 import Processor.OWLOntBuilder;
+import Processor.RDFDocBuilder;
 import Processor.XSDDOMBuilder;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,6 +12,7 @@ import rdb2xml.ui.*;
 import rdb2xml.ui.tree.node.Attribute;
 import rdb2xml.ui.tree.node.RelationNode;
 import rdb2xml.ui.tree.node.SchemaNode;
+import rdb2xml.ui.tree.node.Tuple;
 
 public class Controller extends Thread
 {
@@ -61,10 +63,16 @@ public class Controller extends Thread
         }
     }
 
-    public void importAndSerialiseData( RSyntaxTextArea syntaxTextArea )
+    public void importAndSerialiseDataAsXML( RSyntaxTextArea syntaxTextArea )
     {
-        DataController dataController = new DataController( ( SchemaNode ) ( SchemaImportThread.getSchemaTreeTable() ).getTreeTableModel().getRoot(), syntaxTextArea );
+        RDB2XMLController dataController = new RDB2XMLController( ( SchemaNode ) ( SchemaImportThread.getSchemaTreeTable() ).getTreeTableModel().getRoot(), syntaxTextArea );
         dataController.start();
+    }
+    
+    public void importAndSerialiseDataAsRDF( RSyntaxTextArea syntaxTextArea )
+    {
+        RDB2RDFController RDFDataController = new RDB2RDFController( ( SchemaNode ) ( SchemaImportThread.getSchemaTreeTable() ).getTreeTableModel().getRoot(), syntaxTextArea );
+        RDFDataController.start();
     }
 
     public void serialiseSchema( RSyntaxTextArea syntaxTextArea )
@@ -82,6 +90,7 @@ public class Controller extends Thread
         }
         xsdDOMBuilder.serialise( syntaxTextArea );
     }
+    
     public void serialiseOntology(  RSyntaxTextArea syntaxTextArea )
     {
         OWLOntBuilder owlOntBuilder = new OWLOntBuilder();
@@ -102,5 +111,7 @@ public class Controller extends Thread
         {
             
         }
+
     }
+
 }

@@ -57,6 +57,7 @@ public final class MainInterface extends javax.swing.JFrame
 
 
     private javax.swing.JMenuItem subMenu_serialiseOntology;
+    private javax.swing.JMenuItem subMenu_serialiseRDF;
     
     public MainInterface( Controller controller )
     {
@@ -135,6 +136,9 @@ public final class MainInterface extends javax.swing.JFrame
         
         subMenu_serialiseOntology.setBackground( backgroundColor );
         subMenu_serialiseOntology.setForeground( foregroundColor );
+        
+        subMenu_serialiseRDF.setBackground( backgroundColor );
+        subMenu_serialiseRDF.setForeground( foregroundColor );
     }
 
     private void setDimensions()
@@ -166,6 +170,7 @@ public final class MainInterface extends javax.swing.JFrame
         subMenu_serialiseData = new javax.swing.JMenuItem();
         
         subMenu_serialiseOntology = new javax.swing.JMenuItem();
+        subMenu_serialiseRDF = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation( javax.swing.WindowConstants.EXIT_ON_CLOSE );
         setTitle( "RDB to XML" );
@@ -255,7 +260,11 @@ public final class MainInterface extends javax.swing.JFrame
 
         subMenu_serialiseOntology.setText( "Ontology" );
         subMenu_serialiseOntology.addActionListener( this::subMenu_serialiseOntologyActionPerformed );
-        mainMenu_serialise.add( subMenu_serialiseOntology );       
+        mainMenu_serialise.add( subMenu_serialiseOntology );   
+        
+        subMenu_serialiseRDF.setText( "RDF" );
+        subMenu_serialiseRDF.addActionListener( this::subMenu_serialiseRDFActionPerformed );
+        mainMenu_serialise.add( subMenu_serialiseRDF );   
         
         subMenu_serialiseData.setText( "Data" );
         subMenu_serialiseData.addActionListener( this::subMenu_serialiseDataActionPerformed );
@@ -339,7 +348,7 @@ public final class MainInterface extends javax.swing.JFrame
     private void subMenu_serialiseDataActionPerformed( ActionEvent evt )
     {
         RSyntaxTextArea rSyntaxTextArea = addNewSyntaxTab( null );
-        controller.importAndSerialiseData( rSyntaxTextArea );
+        controller.importAndSerialiseDataAsXML( rSyntaxTextArea );
         tabbedPane.setSelectedIndex( tabbedPane.getTabCount() - 1 );
     }
 
@@ -350,13 +359,21 @@ public final class MainInterface extends javax.swing.JFrame
         tabbedPane.setSelectedIndex( tabbedPane.getTabCount() - 1 );
     }
     
-     private void subMenu_serialiseOntologyActionPerformed( ActionEvent evt )
+    private void subMenu_serialiseOntologyActionPerformed( ActionEvent evt )
     {
         RSyntaxTextArea rSyntaxTextArea = addNewSyntaxTab( null );
         controller.serialiseOntology( rSyntaxTextArea );
         tabbedPane.setSelectedIndex( tabbedPane.getTabCount() - 1 );
     }
 
+    private void subMenu_serialiseRDFActionPerformed( ActionEvent evt )
+    {
+        RSyntaxTextArea rSyntaxTextArea = addNewSyntaxTab( null );
+        controller.importAndSerialiseDataAsRDF( rSyntaxTextArea );
+        tabbedPane.setSelectedIndex( tabbedPane.getTabCount() - 1 );
+    }
+    
+    
     private void subMenu_newActionPerformed( ActionEvent evt )
     {
         addNewSyntaxTab( null );
@@ -367,13 +384,15 @@ public final class MainInterface extends javax.swing.JFrame
     {
         if ( tabbedPane.getTabCount() != 0 && tabbedPane.getTitleAt( tabbedPane.getSelectedIndex() ).equals( "schema" ) )
         {
-            subMenu_serialiseOntology.setEnabled( true );
+            subMenu_serialiseRDF.setEnabled( true );
+            subMenu_serialiseRDF.setEnabled( true );
             subMenu_serialiseSchema.setEnabled( true );
             subMenu_serialiseData.setEnabled( true );
         }
         else
         {
             subMenu_serialiseOntology.setEnabled( false );
+            subMenu_serialiseRDF.setEnabled( false );
             subMenu_serialiseSchema.setEnabled( false );
             subMenu_serialiseData.setEnabled( false );
         }

@@ -26,8 +26,6 @@ import rdb2xml.ui.tree.node.SchemaNode;
 import rdb2xml.ui.tree.node.Tuple;
 import static java.util.logging.Logger.getLogger;
 import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
-import static java.util.logging.Logger.getLogger;
-import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
 
 /**
  *

@@ -1,6 +1,7 @@
 package rdb2xml.ui.tree.node;
 
 import Processor.Processor;
+import Processor.ReferencingKeyFinder;
 import extraction.AttributeItem;
 import static extraction.AttributeItem.ATTRIBUTE_NAME;
 import static extraction.AttributeItem.PARENT_RELATION_NAME;
@@ -29,22 +30,11 @@ public class PrimaryKeyNode extends AbstractLeafNode implements Primary
 
     public ArrayList<Foreign> getReferencingKeys()
     {
-        ArrayList<Foreign> referencingKeys = new ArrayList<>();
-
-        Iterable<RelationNode> relationNodes = ( ( SchemaNode ) getParent().getParent() ).getRelations();
-        for ( RelationNode relationNode : relationNodes )
-        {
-            Iterable<Attribute> attributes = relationNode.getAttributes();
-            for ( Attribute attribute : attributes )
-            {
-                if ( attribute instanceof Foreign && ( ( Foreign ) attribute ).getReferencedKey() == this )
-                {
-                    referencingKeys.add( ( Foreign ) attribute );
-                }
-            }
-        }
-
-        return referencingKeys;
+        SchemaNode schemaNode = ( ( SchemaNode ) getParent().getParent() );
+        
+        ReferencingKeyFinder referencingKeyFinder = new ReferencingKeyFinder( this );
+        schemaNode.acceptProcessor( referencingKeyFinder );
+        return referencingKeyFinder.referencingKeys;
     }
 
     @Override
