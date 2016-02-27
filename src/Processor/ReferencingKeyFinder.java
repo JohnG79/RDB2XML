@@ -21,75 +21,61 @@ import rdb2xml.ui.tree.node.Tuple;
  *
  * @author johng
  */
-public class ReferencingKeyFinder implements Processor
-{
+public class ReferencingKeyFinder implements Processor {
 
     private final PrimaryKeyNode primaryKeyNode;
     public final ArrayList<Foreign> referencingKeys;
 
-    private ReferencingKeyFinder()
-    {
+    private ReferencingKeyFinder() {
         this.primaryKeyNode = null;
         this.referencingKeys = null;
     }
 
-    public ReferencingKeyFinder( PrimaryKeyNode primaryKeyNode )
-    {
+    public ReferencingKeyFinder(PrimaryKeyNode primaryKeyNode) {
         this.primaryKeyNode = primaryKeyNode;
         referencingKeys = new ArrayList<Foreign>();
     }
 
     @Override
-    public void visit( Tuple tuple )
-    {
+    public void visit(Tuple tuple) {
 
     }
 
     @Override
-    public void visit( SchemaNode data_schema )
-    {
-        for ( RelationNode relationNode : data_schema.getRelations() )
-        {
-            relationNode.acceptProcessor( this );
+    public void visit(SchemaNode data_schema) {
+        for (RelationNode relationNode : data_schema.getRelations()) {
+            relationNode.acceptProcessor(this);
         }
     }
 
     @Override
-    public void visit( RelationNode relation_schema )
-    {
-        for ( Attribute attribute : relation_schema.getAttributes() )
-        {
-            attribute.acceptProcessor( this );
+    public void visit(RelationNode relation_schema) {
+        for (Attribute attribute : relation_schema.getAttributes()) {
+            attribute.acceptProcessor(this);
         }
     }
 
     @Override
-    public void visit( NonKeyNode non_key )
-    {
+    public void visit(NonKeyNode non_key) {
 
     }
 
     @Override
-    public void visit( Key key )
-    {
+    public void visit(Key key) {
 
     }
 
     @Override
-    public void visit( ForeignKeyNode foreign_key )
-    {
-        if ( foreign_key.getReferencedKey() == primaryKeyNode )
-        {
-            referencingKeys.add( foreign_key );
+    public void visit(ForeignKeyNode foreign_key) {
+        if (foreign_key.getReferencedKey() == primaryKeyNode) {
+            referencingKeys.add(foreign_key);
         }
     }
 
     @Override
-    public void visit( CombinedKeyNode combined_key )
-    {
-        if ( combined_key.getReferencedKey() == primaryKeyNode )
-        {
-            referencingKeys.add( combined_key );
+    public void visit(CombinedKeyNode combined_key) {
+        if (combined_key.getReferencedKey() == primaryKeyNode) {
+            referencingKeys.add(combined_key);
         }
     }
 }

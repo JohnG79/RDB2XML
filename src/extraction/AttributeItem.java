@@ -1,7 +1,6 @@
 package extraction;
 
-public enum AttributeItem
-{
+public enum AttributeItem {
     PARENT_RELATION_NAME,
     ATTRIBUTE_NAME,
     REFERENCED_RELATION_NAME,

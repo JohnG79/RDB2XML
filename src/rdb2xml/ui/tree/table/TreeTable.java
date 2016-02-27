@@ -28,30 +28,24 @@ import rdb2xml.ui.tree.node.PrimaryKeyNode;
 import rdb2xml.ui.tree.node.RelationNode;
 import rdb2xml.ui.tree.node.SchemaNode;
 
-public abstract class TreeTable
-{
+public abstract class TreeTable {
 
-    public static void setFont( JComponent jComponent )
-    {
-        jComponent.setFont( new Font( "Courier New", Font.BOLD, 16 ) );
+    public static void setFont(JComponent jComponent) {
+        jComponent.setFont(new Font("Courier New", Font.BOLD, 16));
     }
 
-    protected static void setFocusHighlight( JComponent component )
-    {
-        component.addFocusListener( new FocusListener()
-        {
+    protected static void setFocusHighlight(JComponent component) {
+        component.addFocusListener(new FocusListener() {
             @Override
-            public void focusGained( FocusEvent e )
-            {
-                component.setBackground( new Color( 255, 255, 225 ) );
+            public void focusGained(FocusEvent e) {
+                component.setBackground(new Color(255, 255, 225));
             }
 
             @Override
-            public void focusLost( FocusEvent e )
-            {
-                component.setBackground( new Color( 255, 255, 225 ) );
+            public void focusLost(FocusEvent e) {
+                component.setBackground(new Color(255, 255, 225));
             }
-        } );
+        });
     }
 
     protected final String[] columnHeadings;
@@ -59,165 +53,142 @@ public abstract class TreeTable
     protected DefaultTreeTableModel tableModel;
     protected JXTreeTable treeTable;
 
-    public TreeTable( String[] columnHeadings, int columnCount )
-    {
+    public TreeTable(String[] columnHeadings, int columnCount) {
         this.columnHeadings = columnHeadings;
-        this.schemaNode = new SchemaNode( new String() );
-        this.schemaNode.setColumnCount( columnCount );
+        this.schemaNode = new SchemaNode(new String());
+        this.schemaNode.setColumnCount(columnCount);
     }
 
-    public TreeTable( String[] columnHeadings, String rootNodeName, int columnCount )
-    {
+    public TreeTable(String[] columnHeadings, String rootNodeName, int columnCount) {
         this.columnHeadings = columnHeadings;
-        this.schemaNode = new SchemaNode( rootNodeName );
-        this.schemaNode.setColumnCount( columnCount );
+        this.schemaNode = new SchemaNode(rootNodeName);
+
+        this.schemaNode.addDataNamespace("wtc", "http://www.weltec.ac.nz/lod/data#");
+        this.schemaNode.addOntologyNamespace("ont", "http://www.weltec.ac.nz/lod/ontology#");
+        this.schemaNode.setColumnCount(columnCount);
     }
 
-    private TreeTable()
-    {
+    private TreeTable() {
         this.columnHeadings = null;
     }
 
-    public SchemaNode getSchemaNode()
-    {
+    public SchemaNode getSchemaNode() {
         return schemaNode;
     }
 
-    public RelationNode addRelation( String relationName )
-    {
-        RelationNode newRelationSchemaNode = new RelationNode( relationName, relationName.substring( 0, 1 ).toUpperCase() + relationName.substring( 1 ) );
+    public RelationNode addRelation(String relationName) {
+        RelationNode newRelationSchemaNode = new RelationNode(relationName, relationName.substring(0, 1).toUpperCase() + relationName.substring(1));
 
-        this.schemaNode.add( newRelationSchemaNode );
+        this.schemaNode.add(newRelationSchemaNode);
         return newRelationSchemaNode;
     }
 
-    public Enumeration<? extends MutableTreeTableNode> getRelationNodes()
-    {
+    public Enumeration<? extends MutableTreeTableNode> getRelationNodes() {
         return this.schemaNode.children();
     }
 
-    public NonKeyNode addNonKey( HashMap<AttributeItem, String> attributeItems, XSDDatatype xsdDatatype )
-    {
-        final String nonKeyName = attributeItems.get( ATTRIBUTE_NAME );
-        final String relationName = attributeItems.get( PARENT_RELATION_NAME );
+    public NonKeyNode addNonKey(HashMap<AttributeItem, String> attributeItems, XSDDatatype xsdDatatype) {
+        final String nonKeyName = attributeItems.get(ATTRIBUTE_NAME);
+        final String relationName = attributeItems.get(PARENT_RELATION_NAME);
 
-        NonKeyNode newNonKeyNode = new NonKeyNode( nonKeyName, xsdDatatype );
-        Enumeration< RelationNode> relationNodes = ( Enumeration<RelationNode> ) getRelationNodes();
-        while ( relationNodes.hasMoreElements() )
-        {
+        NonKeyNode newNonKeyNode = new NonKeyNode(nonKeyName, xsdDatatype);
+        Enumeration< RelationNode> relationNodes = (Enumeration<RelationNode>) getRelationNodes();
+        while (relationNodes.hasMoreElements()) {
             RelationNode relationNode = relationNodes.nextElement();
-            if ( relationNode.getValueAt( 0 ).toString().equals( relationName ) )
-            {
-                relationNode.add( newNonKeyNode );
+            if (relationNode.getValueAt(0).toString().equals(relationName)) {
+                relationNode.add(newNonKeyNode);
             }
         }
         return newNonKeyNode;
     }
 
-    public PrimaryKeyNode addPrimaryKey( HashMap<AttributeItem, String> attributeItems, XSDDatatype xsdDatatype )
-    {
-        final String relationName = attributeItems.get( PARENT_RELATION_NAME );
+    public PrimaryKeyNode addPrimaryKey(HashMap<AttributeItem, String> attributeItems, XSDDatatype xsdDatatype) {
+        final String relationName = attributeItems.get(PARENT_RELATION_NAME);
 
-        PrimaryKeyNode newPrimaryKeyNode = new PrimaryKeyNode( attributeItems, xsdDatatype );
+        PrimaryKeyNode newPrimaryKeyNode = new PrimaryKeyNode(attributeItems, xsdDatatype);
 
-        Enumeration< RelationNode> relationNodes = ( Enumeration<RelationNode> ) getRelationNodes();
-        while ( relationNodes.hasMoreElements() )
-        {
+        Enumeration< RelationNode> relationNodes = (Enumeration<RelationNode>) getRelationNodes();
+        while (relationNodes.hasMoreElements()) {
             RelationNode relationNode = relationNodes.nextElement();
-            if ( relationNode.getValueAt( 0 ).toString().equals( relationName ) )
-            {
-                relationNode.add( newPrimaryKeyNode );
+            if (relationNode.getValueAt(0).toString().equals(relationName)) {
+                relationNode.add(newPrimaryKeyNode);
             }
         }
         return newPrimaryKeyNode;
     }
 
-    public Key addForeignKey( HashMap<AttributeItem, String> attributeItems, XSDDatatype xsdDatatype )
-    {
-        final String foreignKeyName = attributeItems.get( ATTRIBUTE_NAME );
-        final String relationName = attributeItems.get( PARENT_RELATION_NAME );
-        final String refRelationName = attributeItems.get( REFERENCED_RELATION_NAME );
-        final String refKeyName = attributeItems.get( REFERENCED_ATTRIBUTE_NAME );
+    public Key addForeignKey(HashMap<AttributeItem, String> attributeItems, XSDDatatype xsdDatatype) {
+        final String foreignKeyName = attributeItems.get(ATTRIBUTE_NAME);
+        final String relationName = attributeItems.get(PARENT_RELATION_NAME);
+        final String refRelationName = attributeItems.get(REFERENCED_RELATION_NAME);
+        final String refKeyName = attributeItems.get(REFERENCED_ATTRIBUTE_NAME);
 
         rdb2xml.ui.tree.node.AbstractMutableTreeTableNode key = null;
-        Enumeration< RelationNode> relationNodes = ( Enumeration<RelationNode> ) getRelationNodes();
-        while ( relationNodes.hasMoreElements() )
-        {
+        Enumeration< RelationNode> relationNodes = (Enumeration<RelationNode>) getRelationNodes();
+        while (relationNodes.hasMoreElements()) {
             RelationNode relationNode = relationNodes.nextElement();
-            if ( relationNode.getValueAt( 0 ).toString().equals( relationName ) )
-            {
-                Enumeration< AbstractLeafNode> attributes = ( Enumeration< AbstractLeafNode> ) relationNode.children();
-                while ( attributes.hasMoreElements() )
-                {
+            if (relationNode.getValueAt(0).toString().equals(relationName)) {
+                Enumeration< AbstractLeafNode> attributes = (Enumeration< AbstractLeafNode>) relationNode.children();
+                while (attributes.hasMoreElements()) {
                     AbstractLeafNode attribute = attributes.nextElement();
-                    String attributeName = attribute.getValueAt( 0 ).toString();
+                    String attributeName = attribute.getValueAt(0).toString();
 
-                    if ( attributeName.equals( foreignKeyName ) )
-                    {
-                        int index = relationNode.getIndex( attribute );
-                        relationNode.remove( index );
+                    if (attributeName.equals(foreignKeyName)) {
+                        int index = relationNode.getIndex(attribute);
+                        relationNode.remove(index);
 
                         relationNode.insert(
                                 key = new CombinedKeyNode(
                                         attributeItems,
-                                        referencedKey( refRelationName, refKeyName ),
-                                        xsdDatatype ),
-                                index );
+                                        referencedKey(refRelationName, refKeyName),
+                                        xsdDatatype),
+                                index);
 
-                        return ( Key ) key;
+                        return (Key) key;
                     }
                 }
-                relationNode.add( key = new ForeignKeyNode(
+                relationNode.add(key = new ForeignKeyNode(
                         attributeItems,
-                        referencedKey( refRelationName, refKeyName ),
+                        referencedKey(refRelationName, refKeyName),
                         xsdDatatype
-                ) );
+                ));
             }
         }
-        return ( Key ) key;
+        return (Key) key;
     }
 
-    public abstract JXTreeTable getTreeTable( JTextField jTextField, JComboBox relationNames_comboBox, JComboBox datatype_comboBox );
+    public abstract JXTreeTable getTreeTable(JTextField jTextField, JComboBox relationNames_comboBox, JComboBox datatype_comboBox);
 
-    private Primary referencedKey( String relationName, String keyName )
-    {
-        ArrayList< RelationNode> relations = ( ArrayList< RelationNode> ) this.schemaNode.getRelations();
-        for ( RelationNode relationNode : relations )
-        {
-            if ( relationNode.getName().equals( relationName ) )
-            {
-                for ( Attribute attribute : relationNode.getAttributes() )
-                {
-                    if ( attribute.getName().equals( keyName ) )
-                    {
-                        return ( Primary ) attribute;
+    private Primary referencedKey(String relationName, String keyName) {
+        ArrayList< RelationNode> relations = (ArrayList< RelationNode>) this.schemaNode.getRelations();
+        for (RelationNode relationNode : relations) {
+            if (relationNode.getName().equals(relationName)) {
+                for (Attribute attribute : relationNode.getAttributes()) {
+                    if (attribute.getName().equals(keyName)) {
+                        return (Primary) attribute;
                     }
                 }
             }
         }
-        throw new IllegalStateException( "Referenced primary key doesn't exist!" );
+        throw new IllegalStateException("Referenced primary key doesn't exist!");
     }
 
-    protected void clearCell( Class clas, int column )
-    {
+    protected void clearCell(Class clas, int column) {
         TreePath treePath;
         Object node;
         Class c;
         boolean isEditable;
-        for ( int row = 0; row < treeTable.getRowCount(); row++ )
-        {
-            treePath = treeTable.getPathForRow( row );
+        for (int row = 0; row < treeTable.getRowCount(); row++) {
+            treePath = treeTable.getPathForRow(row);
             node = treePath.getLastPathComponent();
             c = node.getClass();
-            if ( c.equals( clas ) )
-            {
-                isEditable = ( ( TreeTableNode ) node ).isEditable( column );
-                if ( !isEditable )
-                {
-                    ( ( AbstractNode ) node ).setEditable( column, true );
+            if (c.equals(clas)) {
+                isEditable = ((TreeTableNode) node).isEditable(column);
+                if (!isEditable) {
+                    ((AbstractNode) node).setEditable(column, true);
                 }
-                treeTable.setValueAt( "", row, column );
-                ( ( AbstractNode ) node ).setEditable( column, isEditable );
+                treeTable.setValueAt("", row, column);
+                ((AbstractNode) node).setEditable(column, isEditable);
             }
         }
     }

@@ -6,18 +6,15 @@ import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 
-class SelectedRowHighlighter extends ColorHighlighter
-{
+class SelectedRowHighlighter extends ColorHighlighter {
 
-    public SelectedRowHighlighter( HighlightPredicate highlightPredicate )
-    {
-        super( highlightPredicate );
+    public SelectedRowHighlighter(HighlightPredicate highlightPredicate) {
+        super(highlightPredicate);
     }
 
     @Override
-    protected Component doHighlight( Component component, ComponentAdapter componentAdapter )
-    {
-        component.setBackground( new Color( 255, 255, 225 ) );
+    protected Component doHighlight(Component component, ComponentAdapter componentAdapter) {
+        component.setBackground(new Color(255, 255, 225));
         return component;
     }
 }

@@ -4,16 +4,14 @@ import Processor.Processor;
 import extraction.XSDDatatype;
 import static extraction.XSDDatatype.get;
 
-public class NonKeyNode extends AbstractLeafNode implements Attribute
-{
+public class NonKeyNode extends AbstractLeafNode implements Attribute {
 
     private XSDDatatype xsdDatatype;
     private final String nonKeyName;
     private String termName;
 
-    public NonKeyNode( String nonKeyName, XSDDatatype xsdDatatype )
-    {
-        super( null );
+    public NonKeyNode(String nonKeyName, XSDDatatype xsdDatatype) {
+        super(null);
         this.nonKeyName = nonKeyName;
         this.termName = nonKeyName;
         this.allowsChildren = false;
@@ -21,69 +19,55 @@ public class NonKeyNode extends AbstractLeafNode implements Attribute
     }
 
     @Override
-    public void setValueAt( Object o, int column )
-    {
-        switch ( column )
-        {
-            case 1:
-            {
-                termName = ( String ) o;
+    public void setValueAt(Object o, int column) {
+        switch (column) {
+            case 1: {
+                termName = (String) o;
                 break;
             }
         }
     }
-    
-    public String getTermName()
-    {
+
+    public String getTermName() {
         return termName;
     }
-    
+
     @Override
-    public int getOrderNumber()
-    {
+    public int getOrderNumber() {
         RelationNode parent = getParent();
-        return parent.getOrderNumber() + parent.getIndex( this ) + 1;
+        return parent.getOrderNumber() + parent.getIndex(this) + 1;
     }
 
     @Override
-    public RelationNode getParent()
-    {
-        return ( RelationNode ) parent;
+    public RelationNode getParent() {
+        return (RelationNode) parent;
     }
 
     @Override
-    public void setDatatype( String datatype )
-    {
-        xsdDatatype = get( datatype );
+    public void setDatatype(String datatype) {
+        xsdDatatype = get(datatype);
     }
 
     @Override
-    public void acceptProcessor( Processor visitor )
-    {
-        visitor.visit( this );
+    public void acceptProcessor(Processor visitor) {
+        visitor.visit(this);
     }
 
     @Override
-    public XSDDatatype getDatatype()
-    {
+    public XSDDatatype getDatatype() {
         return this.xsdDatatype;
     }
 
     @Override
-    public Object getValueAt( int column )
-    {
-        switch ( column )
-        {
-            case 0:
-            {
+    public Object getValueAt(int column) {
+        switch (column) {
+            case 0: {
                 return nonKeyName;
             }
-            case 1:
-            {
+            case 1: {
                 return termName;
             }
-            case 3:
-            {
+            case 3: {
                 return xsdDatatype.toString();
             }
         }
@@ -91,8 +75,7 @@ public class NonKeyNode extends AbstractLeafNode implements Attribute
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return nonKeyName;
     }
 }

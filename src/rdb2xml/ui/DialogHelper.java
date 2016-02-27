@@ -5,34 +5,27 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class DialogHelper
-{
+public class DialogHelper {
 
-    public static int GetScreenWorkingWidth()
-    {
+    public static int GetScreenWorkingWidth() {
         return getLocalGraphicsEnvironment().getMaximumWindowBounds().width;
     }
 
-    public static int GetScreenWorkingHeight()
-    {
+    public static int GetScreenWorkingHeight() {
         return getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
     }
 
-    public static File getSelectedFileWithExtension( JFileChooser c )
-    {
+    public static File getSelectedFileWithExtension(JFileChooser c) {
         File file = c.getSelectedFile();
-        if ( c.getFileFilter() instanceof FileNameExtensionFilter )
-        {
-            String[] exts = ( ( FileNameExtensionFilter ) c.getFileFilter() ).getExtensions();
+        if (c.getFileFilter() instanceof FileNameExtensionFilter) {
+            String[] exts = ((FileNameExtensionFilter) c.getFileFilter()).getExtensions();
             String nameLower = file.getName().toLowerCase();
-            for ( String ext : exts )
-            {
-                if ( nameLower.endsWith( '.' + ext.toLowerCase() ) )
-                {
+            for (String ext : exts) {
+                if (nameLower.endsWith('.' + ext.toLowerCase())) {
                     return file;
                 }
             }
-            file = new File( file.toString() + '.' + exts[ 0 ] );
+            file = new File(file.toString() + '.' + exts[0]);
         }
         return file;
     }

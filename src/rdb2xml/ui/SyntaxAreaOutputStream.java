@@ -5,8 +5,7 @@ import java.io.OutputStream;
 import static java.lang.String.valueOf;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
-public class SyntaxAreaOutputStream extends OutputStream
-{
+public class SyntaxAreaOutputStream extends OutputStream {
 
     /**
      * This class extends from OutputStream to redirect output to a JTextArrea
@@ -16,16 +15,14 @@ public class SyntaxAreaOutputStream extends OutputStream
      */
     private RSyntaxTextArea textArea;
 
-    public SyntaxAreaOutputStream( RSyntaxTextArea syntaxTextArea )
-    {
+    public SyntaxAreaOutputStream(RSyntaxTextArea syntaxTextArea) {
         this.textArea = syntaxTextArea;
     }
 
     @Override
-    public void write( int b ) throws IOException
-    {
+    public void write(int b) throws IOException {
         // redirects data to the text area
-        textArea.append( valueOf( ( char ) b ) );
+        textArea.append(valueOf((char) b));
 
     }
 }

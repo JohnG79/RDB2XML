@@ -5,58 +5,48 @@ import java.util.List;
 import org.jdesktop.swingx.treetable.MutableTreeTableNode;
 import org.jdesktop.swingx.treetable.TreeTableNode;
 
-public abstract class AbstractNonLeafNode extends AbstractNode
-{
+public abstract class AbstractNonLeafNode extends AbstractNode {
 
-    public AbstractNonLeafNode( Object[] objects )
-    {
-        super( objects );
+    public AbstractNonLeafNode(Object[] objects) {
+        super(objects);
     }
 
     @Override
-    public TreeTableNode getParent()
-    {
+    public TreeTableNode getParent() {
         return parent;
     }
 
     @Override
-    public Object[] getUserObject()
-    {
+    public Object[] getUserObject() {
         return super.getUserObject();
     }
 
     @Override
-    public void setUserObject( Object object )
-    {
-        super.setUserObject( object );
+    public void setUserObject(Object object) {
+        super.setUserObject(object);
     }
 
     @Override
-    public boolean getAllowsChildren()
-    {
+    public boolean getAllowsChildren() {
         return true;
     }
 
     @Override
-    public void setAllowsChildren( boolean allowsChildren )
-    {
+    public void setAllowsChildren(boolean allowsChildren) {
     }
 
     @Override
-    public boolean isLeaf()
-    {
+    public boolean isLeaf() {
         return getChildCount() == 0;
     }
 
     @Override
-    protected List<MutableTreeTableNode> createChildrenList()
-    {
+    protected List<MutableTreeTableNode> createChildrenList() {
         return new ArrayList<>();
     }
 
     @Override
-    public void add( MutableTreeTableNode child )
-    {
-        insert( child, getChildCount() );
+    public void add(MutableTreeTableNode child) {
+        insert(child, getChildCount());
     }
 }

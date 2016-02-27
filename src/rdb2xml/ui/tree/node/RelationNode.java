@@ -9,60 +9,48 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.treetable.MutableTreeTableNode;
 import org.jdesktop.swingx.treetable.TreeTableNode;
 
-public class RelationNode extends AbstractNonLeafNode implements SchemaObject
-{
+public class RelationNode extends AbstractNonLeafNode implements SchemaObject {
 
     private ArrayList<Tuple> tuples;
-
     private final String relationName;
     private String conceptName;
     private final List<Attribute> attributeNodes;
 
-    public RelationNode( String relationName, String conceptName )
-    {
-        super( null );
+    public RelationNode(String relationName, String conceptName) {
+        super(null);
         this.relationName = relationName;
         this.conceptName = conceptName;
         this.allowsChildren = true;
         attributeNodes = new ArrayList<>();
-
         this.tuples = new ArrayList<>();
     }
 
-    public void addTuple( HashMap<String, String> data )
-    {
+    public void addTuple(HashMap<String, String> data) {
         HashMap<Attribute, String> tupleTemp = new HashMap<>();
 
-        if ( data.size() != attributeNodes.size() )
-        {
-            throw new IllegalArgumentException( "tuple length doesn't match number of attributes in this relation." );
+        if (data.size() != attributeNodes.size()) {
+            throw new IllegalArgumentException("tuple length doesn't match number of attributes in this relation.");
         }
         Set<String> attributeNames = data.keySet();
-        for ( String attributeName : attributeNames )
-        {
-            tupleTemp.put( getAttribute( attributeName ), data.get( attributeName ) );
+        for (String attributeName : attributeNames) {
+            tupleTemp.put(getAttribute(attributeName), data.get(attributeName));
         }
-        Tuple newTuple = new Tuple( this );
-        newTuple.setData( tupleTemp );
-        this.tuples.add( newTuple );
+        Tuple newTuple = new Tuple(this);
+        newTuple.setData(tupleTemp);
+        this.tuples.add(newTuple);
     }
 
-    public void removeTuples()
-    {
+    public void removeTuples() {
         this.tuples = new ArrayList<>();
     }
 
-    private Attribute getAttribute( String attributeName )
-    {
+    private Attribute getAttribute(String attributeName) {
         Attribute attributeTemp = null;
-        for ( Attribute attribute : attributeNodes )
-        {
-            if ( attribute.getName().equals( attributeName ) )
-            {
+        for (Attribute attribute : attributeNodes) {
+            if (attribute.getName().equals(attributeName)) {
                 attributeTemp = attribute;
             }
         }
@@ -70,120 +58,98 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
     }
 
     @Override
-    public int getOrderNumber()
-    {
+    public int getOrderNumber() {
         int tally = 0;
-        SchemaNode parentTemp = ( SchemaNode ) getParent();
+        SchemaNode parentTemp = (SchemaNode) getParent();
         tally += parentTemp.getOrderNumber();
         List<RelationNode> relationNodes = parentTemp.getRelations();
-        for ( int i = 0; i < parentTemp.getIndex( this ); i++ )
-        {
+        for (int i = 0; i < parentTemp.getIndex(this); i++) {
             tally += 1;
-            tally += relationNodes.get( i ).getChildCount();
+            tally += relationNodes.get(i).getChildCount();
         }
         return tally;
     }
 
-    public final List<Attribute> getAttributes()
-    {
-        return unmodifiableList( attributeNodes );
+    public final List<Attribute> getAttributes() {
+        return unmodifiableList(attributeNodes);
     }
 
     @Override
-    public void insert( MutableTreeTableNode child, int index )
-    {
-        if ( !allowsChildren )
-        {
-            throw new IllegalStateException( "this node cannot accept children" );
+    public void insert(MutableTreeTableNode child, int index) {
+        if (!allowsChildren) {
+            throw new IllegalStateException("this node cannot accept children");
         }
 
-        if ( attributeNodes.contains( child ) )
-        {
-            attributeNodes.remove( child );
+        if (attributeNodes.contains(child)) {
+            attributeNodes.remove(child);
             index--;
         }
 
-        attributeNodes.add( index, ( Attribute ) child );
+        attributeNodes.add(index, (Attribute) child);
 
-        if ( child.getParent() != this )
-        {
-            child.setParent( this );
+        if (child.getParent() != this) {
+            child.setParent(this);
         }
     }
 
     @Override
-    public void remove( int index )
-    {
-        MutableTreeTableNode a = ( MutableTreeTableNode ) attributeNodes.remove( index );
-        a.setParent( null );
+    public void remove(int index) {
+        MutableTreeTableNode a = (MutableTreeTableNode) attributeNodes.remove(index);
+        a.setParent(null);
     }
 
     @Override
-    public void remove( MutableTreeTableNode node )
-    {
-        attributeNodes.remove( node );
+    public void remove(MutableTreeTableNode node) {
+        attributeNodes.remove(node);
     }
 
     @Override
-    public TreeTableNode getChildAt( int childIndex )
-    {
-        return ( TreeTableNode ) attributeNodes.get( childIndex );
+    public TreeTableNode getChildAt(int childIndex) {
+        return (TreeTableNode) attributeNodes.get(childIndex);
     }
 
     @Override
-    public int getIndex( TreeNode node )
-    {
-        return attributeNodes.indexOf( node );
+    public int getIndex(TreeNode node) {
+        return attributeNodes.indexOf(node);
     }
 
     @Override
-    public Enumeration<? extends MutableTreeTableNode> children()
-    {
+    public Enumeration<? extends MutableTreeTableNode> children() {
         ArrayList<MutableTreeTableNode> attributeNodesTemp = new ArrayList<>();
-        for ( Attribute attribute : this.attributeNodes )
-        {
-            attributeNodesTemp.add( ( MutableTreeTableNode ) attribute );
+        for (Attribute attribute : this.attributeNodes) {
+            attributeNodesTemp.add((MutableTreeTableNode) attribute);
         }
 
-        return enumeration( attributeNodesTemp );
+        return enumeration(attributeNodesTemp);
     }
 
     @Override
-    public int getChildCount()
-    {
+    public int getChildCount() {
         return attributeNodes.size();
     }
 
     @Override
-    public void acceptProcessor( Processor visitor )
-    {
-        visitor.visit( this );
+    public void acceptProcessor(Processor visitor) {
+        visitor.visit(this);
     }
 
     @Override
-    public void setValueAt( Object value, int column )
-    {
-        switch ( column )
-        {
-            case 1:
-            {
-                conceptName = ( String ) value;
+    public void setValueAt(Object value, int column) {
+        switch (column) {
+            case 1: {
+                conceptName = (String) value;
                 break;
             }
         }
     }
 
     @Override
-    public Object getValueAt( int column )
-    {
-        switch ( column )
-        {
-            case 0:
-            {
+    public Object getValueAt(int column) {
+        switch (column) {
+            case 0: {
                 return relationName;
             }
-            case 1:
-            {
+            case 1: {
                 return conceptName;
             }
         }
@@ -191,19 +157,38 @@ public class RelationNode extends AbstractNonLeafNode implements SchemaObject
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return relationName;
     }
 
-    public void clearData()
-    {
+    public void clearData() {
         tuples = new ArrayList<>();
     }
 
-    public ArrayList<Tuple> getTuples()
-    {
+    public ArrayList<Tuple> getTuples() {
         return this.tuples;
+    }
+
+    String getDataNSPrefix() {
+        HashMap<String, String> namespaces = ((SchemaNode) this.parent).getDataNamespaces();
+        return ((String) namespaces.keySet().toArray()[0]);
+    }
+
+    String getOntologyNSPrefix() {
+        HashMap<String, String> namespaces = ((SchemaNode) this.parent).getOntologyNamespaces();
+        return ((String) namespaces.keySet().toArray()[0]);
+    }
+
+    String getDataNS() {
+        HashMap<String, String> namespaces = ((SchemaNode) this.parent).getDataNamespaces();
+        String s = namespaces.get(namespaces.keySet().toArray()[0]);
+        return s;
+    }
+
+    String getOntologyNS() {
+        HashMap<String, String> namespaces = ((SchemaNode) this.parent).getOntologyNamespaces();
+        String s = namespaces.get(namespaces.keySet().toArray()[0]);
+        return s;
     }
 
 }

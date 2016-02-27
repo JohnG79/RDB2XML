@@ -2,23 +2,19 @@ package rdb2xml.ui;
 
 import javax.swing.JPanel;
 
-public class CustomPanel extends JPanel
-{
+public class CustomPanel extends JPanel {
 
     public boolean savedStatus = false;
 
-    public CustomPanel()
-    {
+    public CustomPanel() {
         super();
     }
 
-    public void setSavedStatus( boolean savedStatus )
-    {
+    public void setSavedStatus(boolean savedStatus) {
         this.savedStatus = savedStatus;
     }
 
-    public boolean isSaved()
-    {
+    public boolean isSaved() {
         return savedStatus;
     }
 }

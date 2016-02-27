@@ -1,30 +1,24 @@
 package persistence;
 
-public enum DataFormat
-{
+public enum DataFormat {
 
-    OWL( new String[]
-    {
+    OWL(new String[]{
         "Schema", "Concept / Property", "Property Range"
-    } ),
-    XSD( new String[]
-    {
+    }),
+    XSD(new String[]{
         "Schema", "Datatype"
-    } ),
-    XML( new String[]
-    {
+    }),
+    XML(new String[]{
         ""
-    } );
+    });
 
     private final String[] treeTableHeadings;
 
-    private DataFormat( String[] treeTableHeadings )
-    {
+    private DataFormat(String[] treeTableHeadings) {
         this.treeTableHeadings = treeTableHeadings;
     }
 
-    public String[] treeTableHeadings()
-    {
+    public String[] treeTableHeadings() {
         return treeTableHeadings;
     }
 }

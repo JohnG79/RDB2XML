@@ -13,23 +13,20 @@ import persistence.DataFormat;
 import static persistence.DataFormat.OWL;
 import static persistence.DataFormat.XSD;
 
-public class ConnectDialog extends javax.swing.JFrame
-{
+public class ConnectDialog extends javax.swing.JFrame {
 
     private Controller controller;
 
-    private ConnectDialog()
-    {
+    private ConnectDialog() {
     }
 
-    public ConnectDialog( Controller controller )
-    {
+    public ConnectDialog(Controller controller) {
         this.controller = controller;
         initComponents();
-        setDefaultCloseOperation( ConnectDialog.HIDE_ON_CLOSE );
+        setDefaultCloseOperation(ConnectDialog.HIDE_ON_CLOSE);
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -177,17 +174,17 @@ public class ConnectDialog extends javax.swing.JFrame
     private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectButtonActionPerformed
 
         HashMap<ConnectionParameter, String> connectionParams = new HashMap<ConnectionParameter, String>();
-        connectionParams.put( HOST, host.getText() );
-        connectionParams.put( PORT, port.getText() );
-        connectionParams.put( SCHEMA, database.getText() );
-        connectionParams.put( USERNAME, username.getText() );
-        connectionParams.put( PASSWORD, password.getText() );
-        putConnectionParams( connectionParams );
+        connectionParams.put(HOST, host.getText());
+        connectionParams.put(PORT, port.getText());
+        connectionParams.put(SCHEMA, database.getText());
+        connectionParams.put(USERNAME, username.getText());
+        connectionParams.put(PASSWORD, password.getText());
+        putConnectionParams(connectionParams);
 
     }//GEN-LAST:event_connectButtonActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        this.setVisible( false );
+        this.setVisible(false);
         controller.enableMainForm();
     }//GEN-LAST:event_cancelActionPerformed
 
@@ -215,23 +212,17 @@ public class ConnectDialog extends javax.swing.JFrame
     private javax.swing.JRadioButton xmlRadioButton;
     // End of variables declaration//GEN-END:variables
 
-    private void setIconImage( ImageIcon imageIcon )
-    {
-        this.setIconImage( imageIcon.getImage() );
+    private void setIconImage(ImageIcon imageIcon) {
+        this.setIconImage(imageIcon.getImage());
     }
     private HashMap<ConnectionParameter, String> connectionParams;
     private boolean available = false;
 
-    public synchronized HashMap<ConnectionParameter, String> getConnectionParams()
-    {
-        while ( available == false )
-        {
-            try
-            {
+    public synchronized HashMap<ConnectionParameter, String> getConnectionParams() {
+        while (available == false) {
+            try {
                 wait();
-            }
-            catch ( InterruptedException e )
-            {
+            } catch (InterruptedException e) {
             }
         }
         available = false;
@@ -239,16 +230,11 @@ public class ConnectDialog extends javax.swing.JFrame
         return this.connectionParams;
     }
 
-    private synchronized void putConnectionParams( HashMap<ConnectionParameter, String> connectionParams )
-    {
-        while ( available == true )
-        {
-            try
-            {
+    private synchronized void putConnectionParams(HashMap<ConnectionParameter, String> connectionParams) {
+        while (available == true) {
+            try {
                 wait();
-            }
-            catch ( InterruptedException e )
-            {
+            } catch (InterruptedException e) {
             }
         }
         this.connectionParams = connectionParams;
@@ -256,8 +242,7 @@ public class ConnectDialog extends javax.swing.JFrame
         notifyAll();
     }
 
-    public DataFormat getDataFormat()
-    {
-        return ( xmlRadioButton.isSelected() ? XSD : OWL );
+    public DataFormat getDataFormat() {
+        return (xmlRadioButton.isSelected() ? XSD : OWL);
     }
 }

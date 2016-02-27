@@ -12,45 +12,44 @@ import rdb2xml.ui.tree.node.Tuple;
  *
  * @author John
  */
-public interface Processor
-{
+public interface Processor {
 
-    public void visit( Tuple tuple );
+    public void visit(Tuple tuple);
 
     /**
      *
      * @param data_schema
      */
-    void visit( SchemaNode data_schema );
+    void visit(SchemaNode data_schema);
 
     /**
      *
      * @param relation_schema
      */
-    void visit( RelationNode relation_schema );
+    void visit(RelationNode relation_schema);
 
     /**
      *
      * @param non_key
      */
-    void visit( NonKeyNode non_key );
+    void visit(NonKeyNode non_key);
 
     /**
      *
      * @param key
      */
-    void visit( Key key );
+    void visit(Key key);
 
     /**
      *
      * @param foreign_key
      */
-    void visit( ForeignKeyNode foreign_key );
+    void visit(ForeignKeyNode foreign_key);
 
     /**
      *
      * @param combined_key
      */
-    void visit( CombinedKeyNode combined_key );
+    void visit(CombinedKeyNode combined_key);
 
 }

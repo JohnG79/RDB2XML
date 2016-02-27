@@ -7,21 +7,18 @@ import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 
-class AlternatingRowHighlighter extends ColorHighlighter
-{
+class AlternatingRowHighlighter extends ColorHighlighter {
 
     private Color color;
 
-    public AlternatingRowHighlighter( HighlightPredicate highlightPredicate, Color color )
-    {
-        super( highlightPredicate );
+    public AlternatingRowHighlighter(HighlightPredicate highlightPredicate, Color color) {
+        super(highlightPredicate);
         this.color = color;
     }
 
     @Override
-    protected Component doHighlight( Component component, ComponentAdapter componentAdapter )
-    {
-        component.setBackground( color );
+    protected Component doHighlight(Component component, ComponentAdapter componentAdapter) {
+        component.setBackground(color);
         return component;
     }
 }

@@ -38,8 +38,7 @@ import rdb2xml.ui.tree.node.RelationNode;
 import rdb2xml.ui.tree.node.SchemaNode;
 import rdb2xml.ui.tree.node.Tuple;
 
-public class OWLOntBuilder implements Processor
-{
+public class OWLOntBuilder implements Processor {
 
     private static IRI baseIRI;
     private static IRI iri2;
@@ -47,249 +46,207 @@ public class OWLOntBuilder implements Processor
     private OWLOntologyManager owlManager;
     private OWLOntology ontology;
 
-    public OWLOntBuilder()
-    {
-        try
-        {
-            initialiseModel( "http://someBaseIRI" );
+    public OWLOntBuilder() {
+        try {
+            initialiseModel("http://someBaseIRI");
 
-        }
-        catch ( Exception e )
-        {
+        } catch (Exception e) {
 
         }
     }
 
-    public void initialiseModel( String baseIRI ) throws OWLOntologyCreationException
-    {
-        OWLOntBuilder.baseIRI = IRI.create( baseIRI );
+    public void initialiseModel(String baseIRI) throws OWLOntologyCreationException {
+        OWLOntBuilder.baseIRI = IRI.create(baseIRI);
         dataFactory = OWLManager.getOWLDataFactory();
 
         owlManager = OWLManager.createOWLOntologyManager();
-        owlManager.addIRIMapper( new AutoIRIMapper( new File( "materializedOntologies" ), true ) );
+        owlManager.addIRIMapper(new AutoIRIMapper(new File("materializedOntologies"), true));
 
-        ontology = owlManager.createOntology( OWLOntBuilder.baseIRI );
+        ontology = owlManager.createOntology(OWLOntBuilder.baseIRI);
     }
 
-    public void addClass( String className )
-    {
-        OWLClass newClass = dataFactory.getOWLClass( IRI.create( baseIRI + "#" + className ) );
-        OWLAxiom newAxiom = dataFactory.getOWLDeclarationAxiom( newClass );
-        owlManager.addAxiom( ontology, newAxiom );
+    public void addClass(String className) {
+        OWLClass newClass = dataFactory.getOWLClass(IRI.create(baseIRI + "#" + className));
+        OWLAxiom newAxiom = dataFactory.getOWLDeclarationAxiom(newClass);
+        owlManager.addAxiom(ontology, newAxiom);
     }
 
-    public void addObjectProperty( String domainClassName, String propertyName, String rangeClassName )
-    {
-        OWLClass newRangeClass = dataFactory.getOWLClass( IRI.create( baseIRI + "#" + rangeClassName ) );
-        OWLObjectProperty newObjectProperty = dataFactory.getOWLObjectProperty( IRI.create( baseIRI + "#" + propertyName ) );
-        Set<OWLObjectPropertyDomainAxiom> allDomainAxioms = ontology.getObjectPropertyDomainAxioms( newObjectProperty );
-        OWLClass newDomainClass = dataFactory.getOWLClass( IRI.create( baseIRI + "#" + domainClassName ) );
+    public void addObjectProperty(String domainClassName, String propertyName, String rangeClassName) {
+        OWLClass newRangeClass = dataFactory.getOWLClass(IRI.create(baseIRI + "#" + rangeClassName));
+        OWLObjectProperty newObjectProperty = dataFactory.getOWLObjectProperty(IRI.create(baseIRI + "#" + propertyName));
+        Set<OWLObjectPropertyDomainAxiom> allDomainAxioms = ontology.getObjectPropertyDomainAxioms(newObjectProperty);
+        OWLClass newDomainClass = dataFactory.getOWLClass(IRI.create(baseIRI + "#" + domainClassName));
 
         Iterator<OWLObjectPropertyDomainAxiom> PropertyDomainAxiom_itr;
-        if ( ( PropertyDomainAxiom_itr = allDomainAxioms.iterator() ).hasNext() )
-        {
+        if ((PropertyDomainAxiom_itr = allDomainAxioms.iterator()).hasNext()) {
             OWLObjectPropertyDomainAxiom propertyDomainAxiom;
-            Set<OWLClass> existingDomainClasses = ( propertyDomainAxiom = PropertyDomainAxiom_itr.next() ).getClassesInSignature();
+            Set<OWLClass> existingDomainClasses = (propertyDomainAxiom = PropertyDomainAxiom_itr.next()).getClassesInSignature();
 
-            owlManager.removeAxiom( ontology, propertyDomainAxiom );
-            existingDomainClasses.add( newDomainClass );
-            appendToObjectPropertyDomainAxiom( existingDomainClasses, propertyDomainAxiom, newObjectProperty );
+            owlManager.removeAxiom(ontology, propertyDomainAxiom);
+            existingDomainClasses.add(newDomainClass);
+            appendToObjectPropertyDomainAxiom(existingDomainClasses, propertyDomainAxiom, newObjectProperty);
 
             return;
         }
 
-        addObjectPropertyDomainAxiom( newObjectProperty, dataFactory.getOWLClass( IRI.create( baseIRI + "#" + domainClassName ) ) );
-        addObjectPropertyRangeAxiom( newObjectProperty, newRangeClass );
+        addObjectPropertyDomainAxiom(newObjectProperty, dataFactory.getOWLClass(IRI.create(baseIRI + "#" + domainClassName)));
+        addObjectPropertyRangeAxiom(newObjectProperty, newRangeClass);
     }
 
-    public void addDataProperty( String propertyName, String domainClassName, XSDVocabulary xsdVocabulary )
-    {
-        OWLDataProperty newDataProperty = dataFactory.getOWLDataProperty( IRI.create( baseIRI + "#" + propertyName ) );
-        OWLDatatype newDatatype = dataFactory.getOWLDatatype( xsdVocabulary.getIRI() );
+    public void addDataProperty(String propertyName, String domainClassName, XSDVocabulary xsdVocabulary) {
+        OWLDataProperty newDataProperty = dataFactory.getOWLDataProperty(IRI.create(baseIRI + "#" + propertyName));
+        OWLDatatype newDatatype = dataFactory.getOWLDatatype(xsdVocabulary.getIRI());
 
-        Set<OWLDataPropertyDomainAxiom> allDomainAxioms = ontology.getDataPropertyDomainAxioms( newDataProperty );
-        OWLClass newClass = dataFactory.getOWLClass( IRI.create( baseIRI + "#" + domainClassName ) );
+        Set<OWLDataPropertyDomainAxiom> allDomainAxioms = ontology.getDataPropertyDomainAxioms(newDataProperty);
+        OWLClass newClass = dataFactory.getOWLClass(IRI.create(baseIRI + "#" + domainClassName));
 
         Iterator<OWLDataPropertyDomainAxiom> PropertyDomainAxiom_itr;
-        if ( ( PropertyDomainAxiom_itr = allDomainAxioms.iterator() ).hasNext() )
-        {
+        if ((PropertyDomainAxiom_itr = allDomainAxioms.iterator()).hasNext()) {
             OWLDataPropertyDomainAxiom propertyDomainAxiom;
-            Set<OWLClass> existingDomainClasses = ( propertyDomainAxiom = PropertyDomainAxiom_itr.next() ).getClassesInSignature();
+            Set<OWLClass> existingDomainClasses = (propertyDomainAxiom = PropertyDomainAxiom_itr.next()).getClassesInSignature();
 
-            owlManager.removeAxiom( ontology, propertyDomainAxiom );
-            existingDomainClasses.add( newClass );
-            appendToDataPropertyDomainAxiom( existingDomainClasses, propertyDomainAxiom, newDataProperty );
+            owlManager.removeAxiom(ontology, propertyDomainAxiom);
+            existingDomainClasses.add(newClass);
+            appendToDataPropertyDomainAxiom(existingDomainClasses, propertyDomainAxiom, newDataProperty);
 
-            Set<OWLDataPropertyRangeAxiom> allRangeAxioms = ontology.getDataPropertyRangeAxioms( newDataProperty );
+            Set<OWLDataPropertyRangeAxiom> allRangeAxioms = ontology.getDataPropertyRangeAxioms(newDataProperty);
             Iterator<OWLDataPropertyRangeAxiom> PropertyRangeAxiom_itr;
-            if ( ( PropertyRangeAxiom_itr = allRangeAxioms.iterator() ).hasNext() )
-            {
+            if ((PropertyRangeAxiom_itr = allRangeAxioms.iterator()).hasNext()) {
                 OWLDataPropertyRangeAxiom propertyRangeAxiom;
-                Set<OWLDatatype> existingDatatypes = ( propertyRangeAxiom = PropertyRangeAxiom_itr.next() ).getDatatypesInSignature();
+                Set<OWLDatatype> existingDatatypes = (propertyRangeAxiom = PropertyRangeAxiom_itr.next()).getDatatypesInSignature();
 
-                existingDatatypes.add( newDatatype );
-                appendToDataPropertyRangeAxiom( existingDatatypes, propertyRangeAxiom, newDataProperty );
+                existingDatatypes.add(newDatatype);
+                appendToDataPropertyRangeAxiom(existingDatatypes, propertyRangeAxiom, newDataProperty);
             }
             return;
         }
 
-        addDataPropertyDomainAxiom( newDataProperty, dataFactory.getOWLClass( IRI.create( baseIRI + "#" + domainClassName ) ) );
-        addDataPropertyRangeAxiom( newDataProperty, newDatatype );
+        addDataPropertyDomainAxiom(newDataProperty, dataFactory.getOWLClass(IRI.create(baseIRI + "#" + domainClassName)));
+        addDataPropertyRangeAxiom(newDataProperty, newDatatype);
     }
 
-    private void addDataPropertyDomainAxiom( OWLDataProperty owlDataProperty, OWLClass owlClass )
-    {
-        OWLAxiom newAxiom = dataFactory.getOWLDataPropertyDomainAxiom( owlDataProperty, owlClass );
-        owlManager.addAxiom( ontology, newAxiom );
+    private void addDataPropertyDomainAxiom(OWLDataProperty owlDataProperty, OWLClass owlClass) {
+        OWLAxiom newAxiom = dataFactory.getOWLDataPropertyDomainAxiom(owlDataProperty, owlClass);
+        owlManager.addAxiom(ontology, newAxiom);
     }
 
-    private void addObjectPropertyDomainAxiom( OWLObjectProperty owlObjectProperty, OWLClass owlClass )
-    {
-        OWLAxiom newAxiom = dataFactory.getOWLObjectPropertyDomainAxiom( owlObjectProperty, owlClass );
-        owlManager.addAxiom( ontology, newAxiom );
+    private void addObjectPropertyDomainAxiom(OWLObjectProperty owlObjectProperty, OWLClass owlClass) {
+        OWLAxiom newAxiom = dataFactory.getOWLObjectPropertyDomainAxiom(owlObjectProperty, owlClass);
+        owlManager.addAxiom(ontology, newAxiom);
     }
 
-    private void addDataPropertyRangeAxiom( OWLDataProperty owlDataProperty, OWLDatatype dataType )
-    {
-        OWLAxiom PropertyRangeAxiom = dataFactory.getOWLDataPropertyRangeAxiom( owlDataProperty, dataType );
-        owlManager.addAxiom( ontology, PropertyRangeAxiom );
+    private void addDataPropertyRangeAxiom(OWLDataProperty owlDataProperty, OWLDatatype dataType) {
+        OWLAxiom PropertyRangeAxiom = dataFactory.getOWLDataPropertyRangeAxiom(owlDataProperty, dataType);
+        owlManager.addAxiom(ontology, PropertyRangeAxiom);
     }
 
-    private void addObjectPropertyRangeAxiom( OWLObjectProperty owlObjectProperty, OWLClass rangeClass )
-    {
+    private void addObjectPropertyRangeAxiom(OWLObjectProperty owlObjectProperty, OWLClass rangeClass) {
 
-        OWLAxiom PropertyRangeAxiom = dataFactory.getOWLObjectPropertyRangeAxiom( owlObjectProperty, rangeClass );
-        owlManager.addAxiom( ontology, PropertyRangeAxiom );
+        OWLAxiom PropertyRangeAxiom = dataFactory.getOWLObjectPropertyRangeAxiom(owlObjectProperty, rangeClass);
+        owlManager.addAxiom(ontology, PropertyRangeAxiom);
     }
 
-    private void appendToDataPropertyDomainAxiom( Set<OWLClass> owlClasses, OWLDataPropertyDomainAxiom existingAxiom, OWLDataProperty owlDataProperty )
-    {
-        OWLClassExpression oe = dataFactory.getOWLObjectUnionOf( owlClasses );
-        owlManager.removeAxiom( ontology, existingAxiom );
-        existingAxiom = dataFactory.getOWLDataPropertyDomainAxiom( owlDataProperty, oe );
-        owlManager.addAxiom( ontology, existingAxiom );
+    private void appendToDataPropertyDomainAxiom(Set<OWLClass> owlClasses, OWLDataPropertyDomainAxiom existingAxiom, OWLDataProperty owlDataProperty) {
+        OWLClassExpression oe = dataFactory.getOWLObjectUnionOf(owlClasses);
+        owlManager.removeAxiom(ontology, existingAxiom);
+        existingAxiom = dataFactory.getOWLDataPropertyDomainAxiom(owlDataProperty, oe);
+        owlManager.addAxiom(ontology, existingAxiom);
     }
 
-    private void appendToObjectPropertyDomainAxiom( Set<OWLClass> owlClasses, OWLObjectPropertyDomainAxiom existingAxiom, OWLObjectProperty owlObjectProperty )
-    {
-        OWLClassExpression oe = dataFactory.getOWLObjectUnionOf( owlClasses );
-        owlManager.removeAxiom( ontology, existingAxiom );
-        existingAxiom = dataFactory.getOWLObjectPropertyDomainAxiom( owlObjectProperty, oe );
-        owlManager.addAxiom( ontology, existingAxiom );
+    private void appendToObjectPropertyDomainAxiom(Set<OWLClass> owlClasses, OWLObjectPropertyDomainAxiom existingAxiom, OWLObjectProperty owlObjectProperty) {
+        OWLClassExpression oe = dataFactory.getOWLObjectUnionOf(owlClasses);
+        owlManager.removeAxiom(ontology, existingAxiom);
+        existingAxiom = dataFactory.getOWLObjectPropertyDomainAxiom(owlObjectProperty, oe);
+        owlManager.addAxiom(ontology, existingAxiom);
     }
 
-    private void appendToDataPropertyRangeAxiom( Set<OWLDatatype> existingOwlDatatypes, OWLDataPropertyRangeAxiom existingAxiom, OWLDataProperty owlDataProperty )
-    {
-        OWLDataRange owlDataRange = dataFactory.getOWLDataUnionOf( existingOwlDatatypes );
-        owlManager.removeAxiom( ontology, existingAxiom );
-        existingAxiom = dataFactory.getOWLDataPropertyRangeAxiom( owlDataProperty, owlDataRange );
-        owlManager.addAxiom( ontology, existingAxiom );
+    private void appendToDataPropertyRangeAxiom(Set<OWLDatatype> existingOwlDatatypes, OWLDataPropertyRangeAxiom existingAxiom, OWLDataProperty owlDataProperty) {
+        OWLDataRange owlDataRange = dataFactory.getOWLDataUnionOf(existingOwlDatatypes);
+        owlManager.removeAxiom(ontology, existingAxiom);
+        existingAxiom = dataFactory.getOWLDataPropertyRangeAxiom(owlDataProperty, owlDataRange);
+        owlManager.addAxiom(ontology, existingAxiom);
     }
 
-    public void serialiseModel( org.fife.ui.rsyntaxtextarea.RSyntaxTextArea syntaxArea ) throws OWLOntologyStorageException
-    {
-        OutputStream o = new OutputStream()
-        {
-
+    public void serialiseModel(org.fife.ui.rsyntaxtextarea.RSyntaxTextArea syntaxArea) throws OWLOntologyStorageException {
+        OutputStream o = new OutputStream() {
             @Override
-            public void write( int b ) throws IOException
-            {
-                String s = String.valueOf( ( char ) b );
-                syntaxArea.append( s );
+            public void write(int b) throws IOException {
+                String s = String.valueOf((char) b);
+                syntaxArea.append(s);
             }
-
         };
-        syntaxArea.setText( "" );
-        owlManager.saveOntology( ontology, new TurtleOntologyFormat(), o );
-
+        syntaxArea.setText("");
+        owlManager.saveOntology(ontology, new TurtleOntologyFormat(), o);
     }
 
-    public void print()
-    {
-        File file = new File( "C:\\Users\\John\\Documents\\NetBeans\\Projects\\Program\\output-files\\output.owl" );
-        IRI documentIRI2 = IRI.create( file );
-        try
-        {
-            owlManager.saveOntology( ontology, new TurtleOntologyFormat(), documentIRI2 );
-        }
-        catch ( OWLOntologyStorageException ex )
-        {
-            Logger.getLogger( OWLOntBuilder.class.getName() ).log( Level.SEVERE, null, ex );
+    public void print() {
+        File file = new File("C:\\Users\\John\\Documents\\NetBeans\\Projects\\Program\\output-files\\output.owl");
+        IRI documentIRI2 = IRI.create(file);
+        try {
+            owlManager.saveOntology(ontology, new TurtleOntologyFormat(), documentIRI2);
+        } catch (OWLOntologyStorageException ex) {
+            Logger.getLogger(OWLOntBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void visit( RelationNode relation )
-    {
+    public void visit(RelationNode relation) {
     }
 
     @Override
-    public void visit( NonKeyNode nonKeyNode )
-    {
-        String domainClassName = nonKeyNode.getParent().getValueAt( 1 ).toString();
-        String propertyName = nonKeyNode.getValueAt( 1 ).toString();
-        String datatypeName = nonKeyNode.getValueAt( 3 ).toString();
-        addDataProperty( propertyName, domainClassName, getVocabulary( datatypeName ) );
+    public void visit(NonKeyNode nonKeyNode) {
+        String domainClassName = nonKeyNode.getParent().getValueAt(1).toString();
+        String propertyName = nonKeyNode.getValueAt(1).toString();
+        String datatypeName = nonKeyNode.getValueAt(3).toString();
+        addDataProperty(propertyName, domainClassName, getVocabulary(datatypeName));
     }
 
     @Override
-    public void visit( ForeignKeyNode foreignKey )
-    {
-        String domainClassName = foreignKey.getParent().getValueAt( 1 ).toString();
-        String propertyName = foreignKey.getValueAt( 1 ).toString();
+    public void visit(ForeignKeyNode foreignKey) {
+        String domainClassName = foreignKey.getParent().getValueAt(1).toString();
+        String propertyName = foreignKey.getValueAt(1).toString();
         String rangeClassName = foreignKey.getPropertyRange();
-        addObjectProperty( domainClassName, propertyName, rangeClassName );
+        addObjectProperty(domainClassName, propertyName, rangeClassName);
     }
 
-    private XSDVocabulary getVocabulary( String vocabularyName )
-    {
-        switch ( vocabularyName )
-        {
-            case "xsd:string":
-            {
+    private XSDVocabulary getVocabulary(String vocabularyName) {
+        switch (vocabularyName) {
+            case "xsd:string": {
                 return XSDVocabulary.STRING;
             }
-            case "xsd:integer":
-            {
+            case "xsd:integer": {
                 return XSDVocabulary.INTEGER;
             }
-            case "xsd:decimal":
-            {
+            case "xsd:decimal": {
                 return XSDVocabulary.DECIMAL;
             }
-            case "xsd:anyURI":
-            {
+            case "xsd:anyURI": {
                 return XSDVocabulary.ANY_URI;
             }
-            default:
-            {
+            default: {
                 return XSDVocabulary.ANY_TYPE;
             }
         }
     }
 
     @Override
-    public void visit( Tuple tuple )
-    {
+    public void visit(Tuple tuple) {
 
     }
 
     @Override
-    public void visit( SchemaNode data_schema )
-    {
+    public void visit(SchemaNode data_schema) {
     }
 
     @Override
-    public void visit( Key key )
-    {
+    public void visit(Key key) {
     }
 
     @Override
-    public void visit( CombinedKeyNode combined_key )
-    {
-        String domainClassName = combined_key.getParent().getValueAt( 1 ).toString();
-        String propertyName = combined_key.getValueAt( 1 ).toString();
+    public void visit(CombinedKeyNode combined_key) {
+        String domainClassName = combined_key.getParent().getValueAt(1).toString();
+        String propertyName = combined_key.getValueAt(1).toString();
         String rangeClassName = combined_key.getPropertyRange();
-        addObjectProperty( domainClassName, propertyName, rangeClassName );
+        addObjectProperty(domainClassName, propertyName, rangeClassName);
     }
 }
